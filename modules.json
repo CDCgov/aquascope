@@ -1,0 +1,89 @@
+{
+    "name": "nf-core/aquascope",
+    "homePage": "https://github.com/nf-core/aquascope",
+    "repos": {
+        "nf-core/modules": {
+            "nf-core/bcftools/call": {
+                "git_sha": "911696ea0b62df80e900ef244d7867d177971f73"
+            },
+            "nf-core/bcftools/consensus": {
+                "git_sha": "911696ea0b62df80e900ef244d7867d177971f73"
+            },
+            "nf-core/bcftools/index": {
+                "git_sha": "911696ea0b62df80e900ef244d7867d177971f73"
+            },
+            "nf-core/bcftools/mpileup": {
+                "git_sha": "911696ea0b62df80e900ef244d7867d177971f73"
+            },
+            "nf-core/bowtie2/align": {
+                "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c"
+            },
+            "nf-core/bowtie2/build": {
+                "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c"
+            },
+            "nf-core/custom/dumpsoftwareversions": {
+                "git_sha": "7101db4432d3268b7fcb5b8f75fa0a022dc5561b"
+            },
+            "nf-core/fastp": {
+                "git_sha": "20a508676f40d0fd3f911ac595af91ec845704c4"
+            },
+            "nf-core/fastqc": {
+                "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c"
+            },
+            "nf-core/freyja/boot": {
+                "git_sha": "281c744ed84352c24697f0916c7744853ce83927"
+            },
+            "nf-core/freyja/demix": {
+                "git_sha": "4bb5cb441e89811385d18a90809ecf36c9daafd8"
+            },
+            "nf-core/freyja/update": {
+                "git_sha": "4bb5cb441e89811385d18a90809ecf36c9daafd8"
+            },
+            "nf-core/freyja/variants": {
+                "git_sha": "4bb5cb441e89811385d18a90809ecf36c9daafd8"
+            },
+            "nf-core/ivar/trim": {
+                "git_sha": "b6d4d476aee074311c89d82a69c1921bd70c8180"
+            },
+            "nf-core/ivar/variants": {
+                "git_sha": "b6d4d476aee074311c89d82a69c1921bd70c8180"
+            },
+            "nf-core/kraken2/kraken2": {
+                "git_sha": "7c695e0147df1157413e06246d9b0094617d3e6b"
+            },
+            "nf-core/minimap2/align": {
+                "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c"
+            },
+            "nf-core/minimap2/index": {
+                "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c"
+            },
+            "nf-core/multiqc": {
+                "git_sha": "ee80d14721e76e2e079103b8dcd5d57129e584ba"
+            },
+            "nf-core/pangolin": {
+                "git_sha": "911696ea0b62df80e900ef244d7867d177971f73"
+            },
+            "nf-core/samtools/flagstat": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/samtools/idxstats": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/samtools/index": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/samtools/mpileup": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/samtools/sort": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/samtools/stats": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/samtools/view": {
+                "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            }
+        }
+    }
+}
