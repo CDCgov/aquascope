@@ -13,7 +13,7 @@ WorkflowAquascope.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 
-def checkPathParamList = [ params.input, params.fasta, params.bedfile]
+def checkPathParamList = [ params.input, params.fasta, params.bedfile, params.freyja_barcodes, params.freyja_lineages_meta]
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -86,10 +86,6 @@ workflow AQUASCOPE {
     ch_genome               = params.fasta                ? Channel.value(file( "${params.fasta}" ))                : Channel.empty()        
     ch_kraken2db            = params.kraken2db            ? Channel.value(file( "${params.kraken2db}" ))            : Channel.empty()
     ch_bedfile              = params.bedfile              ? Channel.value(file( "${params.bedfile}" ))              : Channel.empty()
-    ch_freyja_barcodes      = params.freyja_barcodes      ? Channel.value(file( "${params.freyja_barcodes}" ))      : Channel.empty()
-    ch_freyja_lineages_meta = params.freyja_lineages_meta ? Channel.value(file( "${params.freyja_lineages_meta}" )) : Channel.empty()
-    ch_val_repeats          = params.freyja_repeats       ? Channel.value( params.freyja_repeats )                  : Channel.value(1000)
-
     
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     INPUT_CHECK (
@@ -189,16 +185,16 @@ workflow AQUASCOPE {
     //
     // MODULE: PANGOLIN_VARIANT_ESTIMATION
     //
-
-    ch_pangolin_csv = Channel.empty()
-    PANGOLIN_VARIANTESTIMATION(
-        ch_sort_bam,
-        ch_genome
-    )
-    ch_pangolin_csv     = PANGOLIN_VARIANTESTIMATION.out.report
-    ch_pangolin_stats   = PANGOLIN_VARIANTESTIMATION.out.stats
-    ch_versions = ch_versions.mix(PANGOLIN_VARIANTESTIMATION.out.versions)
-
+    if(params.pangolin != false){
+        ch_pangolin_csv = Channel.empty()
+        PANGOLIN_VARIANTESTIMATION(
+            ch_sort_bam,
+            ch_genome
+        )
+        ch_pangolin_csv     = PANGOLIN_VARIANTESTIMATION.out.report
+        ch_pangolin_stats   = PANGOLIN_VARIANTESTIMATION.out.stats
+        ch_versions = ch_versions.mix(PANGOLIN_VARIANTESTIMATION.out.versions)
+    }
 
     // 
     // MODULE: RUN FREYJA_VARIANT_CALLING
@@ -211,10 +207,10 @@ workflow AQUASCOPE {
     FREYJA_VARIANT_CALLING(
         ch_sort_bam, 
         ch_genome,
-        ch_val_repeats,
-        params.db_name,
-        ch_freyja_barcodes,
-        ch_freyja_lineages_meta
+        params.freyja_repeats,
+        params.freyja_db_name,
+        params.freyja_barcodes,
+        params.freyja_lineages_meta
     )
     ch_freyja_variants      = FREYJA_VARIANT_CALLING.out.variants
     ch_freyja_depths        = FREYJA_VARIANT_CALLING.out.depths
@@ -240,7 +236,9 @@ workflow AQUASCOPE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}.ifEmpty([]))
+    if(params.pangolin != false){
     ch_multiqc_files = ch_multiqc_files.mix(ch_pangolin_csv.collect{it[1]}.ifEmpty([]))
+    }
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
     if(params.kraken2 != false){
     ch_multiqc_files = ch_multiqc_files.mix(ch_kraken_report.collect{it[1]}.ifEmpty([]))

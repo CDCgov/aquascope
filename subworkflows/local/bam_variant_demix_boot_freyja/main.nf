@@ -33,25 +33,16 @@ workflow FREYJA_VARIANT_CALLING {
     //
     // Update the database if none are given.
     //
+    
     if (!ch_barcodes || !ch_lineages_meta) {
         FREYJA_UPDATE (
-            val_db_name
-        )
+            val_db_name )
+
+        ch_barcodes      = FREYJA_UPDATE.out.barcodes
+        ch_lineages_meta = FREYJA_UPDATE.out.lineages_meta
+
         ch_versions = ch_versions.mix(FREYJA_UPDATE.out.versions.first())
-
-        FREYJA_UPDATE
-            .out
-            .barcodes
-            .map { barcodes  -> [ [], barcodes ] }
-            .set { ch_barcodes }
-
-        FREYJA_UPDATE
-            .out
-            .lineages_meta
-            .map { lineages  -> [ [], lineages ] }
-            .set { ch_lineages_meta }
     }
-
 
     //
     // demix and define minimum variant abundances

@@ -67,6 +67,15 @@ def parse_args(args=None):
         default=1,
         help="After splitting FastQ file name by --sanitise_name_delimiter all elements before this index (1-based) will be joined to create final sample name.",
     )
+    parser.add_argument(
+        "-sp",
+        "--sequencing_platform",
+        type=str,
+        dest="SEQUENCING_PLATFORM",
+        default="illumina",
+        choices=["illumina", "pacbio", "nanopore"],
+        help="Sequencing platform. Must be one of 'illumina', 'pacbio', or 'nanopore'.",
+    )
     return parser.parse_args(args)
 
 
@@ -74,12 +83,13 @@ def fastq_dir_to_samplesheet(
     fastq_dir,
     samplesheet_file,
     strandedness="unstranded",
-    read1_extension="_R1_001.fastq.gz",
-    read2_extension="_R2_001.fastq.gz",
+    read1_extension="_R1.fastq.gz",
+    read2_extension="_R2.fastq.gz",
     single_end=False,
     sanitise_name=False,
     sanitise_name_delimiter="_",
     sanitise_name_index=1,
+    sequencing_platform="illumina",
 ):
     def sanitize_sample(path, extension):
         """Retrieve sample id from filename"""
@@ -105,7 +115,7 @@ def fastq_dir_to_samplesheet(
     for read1_file in get_fastqs(read1_extension):
         sample = sanitize_sample(read1_file, read1_extension)
         if sample not in read_dict:
-            read_dict[sample] = {"R1": [], "R2": []}
+            read_dict[sample] = {"R1": [], "R2": [], "sequencing_platform": sequencing_platform}
         read_dict[sample]["R1"].append(read1_file)
 
     ## Get read 2 files
@@ -121,14 +131,15 @@ def fastq_dir_to_samplesheet(
             os.makedirs(out_dir)
 
         with open(samplesheet_file, "w") as fout:
-            header = ["sample", "fastq_1", "fastq_2", "strandedness"]
+            header = ["sample", "sequencing_platform", "fastq_1", "fastq_2", "strandedness"]
             fout.write(",".join(header) + "\n")
             for sample, reads in sorted(read_dict.items()):
-                for idx, read_1 in enumerate(reads["R1"]):
+                for idx in range(len(reads["R1"])):
+                    read_1 = reads["R1"][idx]
                     read_2 = ""
                     if idx < len(reads["R2"]):
                         read_2 = reads["R2"][idx]
-                    sample_info = ",".join([sample, read_1, read_2, strandedness])
+                    sample_info = ",".join([sample, reads["sequencing_platform"], read_1, read_2, strandedness])
                     fout.write(f"{sample_info}\n")
     else:
         error_str = "\nWARNING: No FastQ files found so samplesheet has not been created!\n\n"
@@ -157,6 +168,7 @@ def main(args=None):
         sanitise_name=args.SANITISE_NAME,
         sanitise_name_delimiter=args.SANITISE_NAME_DELIMITER,
         sanitise_name_index=args.SANITISE_NAME_INDEX,
+        sequencing_platform=args.SEQUENCING_PLATFORM,
     )
 
 
