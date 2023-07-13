@@ -42,7 +42,6 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 include { INPUT_CHECK                           } from '../subworkflows/local/input_check'
 include { TRIMMING   as IVAR_TRIMMING_SORTING   } from '../subworkflows/local/trimming.nf'
 include { FREYJA_VARIANT_CALLING                } from '../subworkflows/local/bam_variant_demix_boot_freyja/main'
-include { PANGOLIN_VARIANTESTIMATION            } from '../subworkflows/local/pangolin_variantestimation/main'
 
 //
 // MODULES
@@ -52,11 +51,8 @@ include { FASTQC     as FASTQC_RAW              } from '../modules/nf-core/modul
 include { FASTP                                 } from '../modules/nf-core/modules/nf-core/fastp/main'
 include { FASTQC     as FASTQC_TRIMMED          } from '../modules/nf-core/modules/nf-core/fastqc/main'
 include { MINIMAP2_ALIGN                        } from '../modules/nf-core/modules/nf-core/minimap2/align/main'
-include { KRAKEN2_DB_PREPARATION                } from '../modules/local/kraken2_db_preparation'
-include { KRAKEN2_KRAKEN2 as KRAKEN2            } from '../modules/nf-core/modules/nf-core/kraken2/kraken2/main'
 include { IVAR_VARIANTS                         } from '../modules/nf-core/modules/nf-core/ivar/variants/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/modules/nf-core/custom/dumpsoftwareversions/main'
-// Include Pangolin DB BASED VC module ?
 include { MULTIQC                               } from '../modules/nf-core/modules/nf-core/multiqc/main'
 
 
@@ -84,7 +80,6 @@ workflow AQUASCOPE {
     ch_genome_fai           = Channel.empty()
 
     ch_genome               = params.fasta                ? Channel.value(file( "${params.fasta}" ))                : Channel.empty()        
-    ch_kraken2db            = params.kraken2db            ? Channel.value(file( "${params.kraken2db}" ))            : Channel.empty()
     ch_bedfile              = params.bedfile              ? Channel.value(file( "${params.bedfile}" ))              : Channel.empty()
     
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -124,20 +119,6 @@ workflow AQUASCOPE {
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMMED.out.versions.first())
 
-    if(params.kraken2 != false){
-
-    // MODULE: Stage the desired Kraken2 database (this is custom module)
-    KRAKEN2_DB_PREPARATION (
-        ch_kraken2db
-    )
-    
-    // MODULE: Classify trimmed reads with Kraken2
-    ch_kraken_report = Channel.empty()
-    KRAKEN2 (
-        ch_trimmed_reads, KRAKEN2_DB_PREPARATION.out.db, "", ""
-    )
-    ch_kraken_report        = ch_kraken_report.mix(KRAKEN2.out.report)
-    ch_versions             = ch_versions.mix(KRAKEN2.out.versions.first())
 
     }
 
@@ -182,20 +163,6 @@ workflow AQUASCOPE {
     ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first())
 
 
-    //
-    // MODULE: PANGOLIN_VARIANT_ESTIMATION
-    //
-    if(params.pangolin != false){
-        ch_pangolin_csv = Channel.empty()
-        PANGOLIN_VARIANTESTIMATION(
-            ch_sort_bam,
-            ch_genome
-        )
-        ch_pangolin_csv     = PANGOLIN_VARIANTESTIMATION.out.report
-        ch_pangolin_stats   = PANGOLIN_VARIANTESTIMATION.out.stats
-        ch_versions = ch_versions.mix(PANGOLIN_VARIANTESTIMATION.out.versions)
-    }
-
     // 
     // MODULE: RUN FREYJA_VARIANT_CALLING
     //
@@ -236,13 +203,7 @@ workflow AQUASCOPE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}.ifEmpty([]))
-    if(params.pangolin != false){
-    ch_multiqc_files = ch_multiqc_files.mix(ch_pangolin_csv.collect{it[1]}.ifEmpty([]))
-    }
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
-    if(params.kraken2 != false){
-    ch_multiqc_files = ch_multiqc_files.mix(ch_kraken_report.collect{it[1]}.ifEmpty([]))
-    }
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([])
 
     MULTIQC (
         ch_multiqc_files.collect(),
