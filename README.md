@@ -17,7 +17,6 @@
 ## NOTE
 
 This project is a successor to the [C-WAP pipeline](https://github.com/CFSAN-Biostatistics/C-WAP).  
-Please open new Issues on this repo regarding questions and support requests related to C-WAP.
 
 
 ## Introduction
