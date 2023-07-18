@@ -1,3 +1,4 @@
-sample,sequencing_platform,fastq_1,fastq_2,strandedness
-SRR22214907,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/SRR22214907_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/SRR22214907_R2.fastq.gz,reverse
-B20034,illumina,/scicomp/groups/OID/NCEZID/DFWED/MDB/data/BCFB/by-instrument/NovaSeq/210507_A01000_0078_AH7JTTDRXY_BEN12852/BEN12852A7_B20034/B20034_S11_R1_001.fastq.gz,/scicomp/groups/OID/NCEZID/DFWED/MDB/data/BCFB/by-instrument/NovaSeq/210507_A01000_0078_AH7JTTDRXY_BEN12852/BEN12852A7_B20034/B20034_S11_R2_001.fastq.gz,reverse
+id,platform,fastq_1,fastq_2,lr,bam_file
+SRR22214907,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/SRR22214907_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/SRR22214907_R2.fastq.gz,,,
+B20034,illumina,/scicomp/groups/OID/NCEZID/DFWED/MDB/data/BCFB/by-instrument/NovaSeq/210507_A01000_0078_AH7JTTDRXY_BEN12852/BEN12852A7_B20034/B20034_S11_R1_001.fastq.gz,/scicomp/groups/OID/NCEZID/DFWED/MDB/data/BCFB/by-instrument/NovaSeq/210507_A01000_0078_AH7JTTDRXY_BEN12852/BEN12852A7_B20034/B20034_S11_R2_001.fastq.gz,,,
+NY_run_20221108NY0024431,iontorrent,/scicomp/home-pure/tzx6/Documents/Test_Data_for_Nextflow_Projects/Ion_Torrent_data/NY_run_20221108NY0024431.fastq.gz,,,

@@ -73,8 +73,8 @@ def parse_args(args=None):
         type=str,
         dest="SEQUENCING_PLATFORM",
         default="illumina",
-        choices=["illumina", "pacbio", "nanopore"],
-        help="Sequencing platform. Must be one of 'illumina', 'pacbio', or 'nanopore'.",
+        choices=["illumina", "pacbio", "nanopore", "iontorrent"],
+        help="Sequencing platform. Must be one of 'illumina', 'pacbio', 'iontorrent' or 'nanopore'.",
     )
     return parser.parse_args(args)
 

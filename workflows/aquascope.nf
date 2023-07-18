@@ -74,8 +74,9 @@ workflow AQUASCOPE {
 
     // Initialize empty channels and set value channels from params
     ch_versions             = Channel.empty()
-    ch_input                = file("${params.input}")
-    ch_reads                = Channel.empty()
+    ch_short_reads          = Channel.empty()
+    ch_long_reads           = Channel.empty()
+    ch_raw_bam              = Channel.empty()
     ch_reads_minimap        = Channel.empty()
     ch_genome_fai           = Channel.empty()
 
@@ -83,11 +84,10 @@ workflow AQUASCOPE {
     ch_bedfile              = params.bedfile              ? Channel.value(file( "${params.bedfile}" ))              : Channel.empty()
     
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    INPUT_CHECK (
-        ch_input
-    )
-    ch_reads            = INPUT_CHECK.out.reads
-    ch_versions         = ch_versions.mix(INPUT_CHECK.out.versions)
+    INPUT_CHECK ()
+    ch_short_reads           = INPUT_CHECK.out.raw_short_reads
+    ch_long_reads            = INPUT_CHECK.out.raw_long_reads
+    ch_raw_bam               = INPUT_CHECK.out.raw_bam
 
     
     // MODULE: Create Fasta Index file using samtools faidx
@@ -98,16 +98,16 @@ workflow AQUASCOPE {
     ch_versions         = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     
-    // MODULE: FastQC on raw data for initial quality checking
+    // MODULE: FastQC on raw data for initial quality checking for short reads
     FASTQC_RAW (
-        ch_reads
+        ch_short_reads
     )
     ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
 
     // MODULE: Run FastP 
     ch_trimmed_reads = Channel.empty()
      FASTP (
-        ch_reads, [], false, false
+        ch_short_reads, [], false, false
     )
     ch_trimmed_reads = ch_trimmed_reads.mix(FASTP.out.reads)
     //ch_reads_for_fastqc = ch_trimmed_reads
@@ -119,20 +119,19 @@ workflow AQUASCOPE {
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMMED.out.versions.first())
 
-
-    }
-
     // 
     // MODULE: Align reads against reference genome
     //
 
     ch_align_bam = Channel.empty()
     ch_align_bai = Channel.empty()
+    
     MINIMAP2_ALIGN (
-        ch_reads, ch_genome, true, false, false 
+        ch_short_reads, ch_genome, true, false, false 
     )
     ch_align_bam            = MINIMAP2_ALIGN.out.bam
     ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions.first())
+
     
     // 
     // MODULE: RUN IVAR_TRIM_SORT
@@ -203,7 +202,7 @@ workflow AQUASCOPE {
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([])
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),

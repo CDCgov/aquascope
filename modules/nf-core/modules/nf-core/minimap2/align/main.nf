@@ -4,9 +4,9 @@ process MINIMAP2_ALIGN {
 
     // Note: the versions here need to match the versions used in the mulled container below and minimap2/index
     conda "bioconda::minimap2=2.24 bioconda::samtools=1.14"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
-        'quay.io/biocontainers/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' }"
+    container "${workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+            'https://depot.galaxyproject.org/singularity/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0' :
+            'quay.io/biocontainers/mulled-v2-66534bcbb7031a148b13e2ad42583020b9cd25c4:1679e915ddb9d6b4abda91880c4b48857d471bd8-0'}"
 
     input:
     tuple val(meta), path(reads)
@@ -19,27 +19,42 @@ process MINIMAP2_ALIGN {
     tuple val(meta), path("*.paf"), optional: true, emit: paf
     tuple val(meta), path("*.bam"), optional: true, emit: bam
     tuple val(meta), path("*.bai"), optional: true, emit: bai
-    path "versions.yml"           , emit: versions
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def bam_output = bam_format ? "-a | samtools sort | samtools view -@ ${task.cpus} -b -h -o ${prefix}.bam" : "-o ${prefix}.paf"
     def cigar_paf = cigar_paf_format && !bam_format ? "-c" : ''
     def set_cigar_bam = cigar_bam && bam_format ? "-L" : ''
-    """
-    minimap2 \\
-        $args \\
-        -t $task.cpus \\
-        "${reference ?: reads}" \\
-        $reads \\
-        $cigar_paf \\
-        $set_cigar_bam \\
-        $bam_output
+    def platform = "${meta.platform}"
+    def minimap2_args = ''
 
+    if (platform == 'illumina' || platform == 'iontorrent') {
+        minimap2_args = "-ax sr"
+    } else if (platform == 'nanopore') {
+        minimap2_args = "-ax map-ont"
+    } else if (platform == 'pacbio') {
+        minimap2_args = "-ax map-hifi" //Continuous reads shorter than 20kb
+    } else {
+        error "Invalid platform argument: ${platform}"
+    }
+    def alignment_command = """
+        minimap2 \\
+            $minimap2_args \\
+            -t $task.cpus \\
+            "${reference ? : reads}" \\
+            ${reads} \\
+            $cigar_paf \\
+            $set_cigar_bam \\
+            $bam_output
+    """
+
+    """
+    
+    ${alignment_command}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
