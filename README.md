@@ -59,9 +59,9 @@ mock3,nanopore,,,mock3_longread.fastq.gz,
 mock4,pacbio,,,mock4_longread.fastq.gz,
 mock5,iontorrent,,,,mock5.bam
 ```
-> * The above format accounts for single- & paired-end data from Illumina, long-reads from nanopore/pacbio and bam_file from iontorrent.
+    > * The above format accounts for single- & paired-end data from Illumina, long-reads from nanopore/pacbio and bam_file from iontorrent.
 
-> * However, iontorrent input isn't processed through this pipeline, a subworkflow is in active development.
+    > * However, iontorrent input isn't processed through this pipeline, a subworkflow is in active development.
 
 6. test.config file already contains path to input, genome fasta, fai, primer (ARCTIC V4_1 & ARCTIC_V3 primers are used currently).
 
