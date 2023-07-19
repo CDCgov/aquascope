@@ -1,6 +1,6 @@
 sample,platform,fastq_1,fastq_2,lr,bam_file
 SRR22214907,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/SRR22214907_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/SRR22214907_R2.fastq.gz,,
-NY_run_20221108NY0024431,iontorrent,,,,/scicomp/home-pure/tzx6/Documents/Test_Data_for_Nextflow_Projects/Ion_Torrent_data/NY_run_20221108NY0024431.bam
+NY_run_20221108NY0024431,iontorrent,,,,/scicomp/reference-pure/nextflow/test_datasets/wastewater/NY_run_20221108NY0024431.bam
 B117_syn,illumina,/scicomp/reference-pure/nextflow/test_datasets/wastewater/B117_syn_R1.fastq.gz,/scicomp/reference-pure/nextflow/test_datasets/wastewater/B117_syn_R2.fastq.gz,,
 SRR14498238,nanopore,,,/scicomp/reference-pure/nextflow/nanopre_testdata/SRR14498238.fastq.gz,
 SRR14498240,nanopore,,,/scicomp/reference-pure/nextflow/nanopre_testdata/SRR14498240.fastq.gz,
