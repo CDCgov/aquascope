@@ -39,7 +39,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 //
 // SUBWORKFLOWS
 //
-include { INPUT_CHECK                           } from '../subworkflows/local/input_check'
+include { INPUT_CHECK                           } from '../subworkflows/local/input_check.nf'
 include { TRIMMING   as IVAR_TRIMMING_SORTING   } from '../subworkflows/local/trimming.nf'
 include { FREYJA_VARIANT_CALLING                } from '../subworkflows/local/bam_variant_demix_boot_freyja/main'
 
@@ -47,10 +47,12 @@ include { FREYJA_VARIANT_CALLING                } from '../subworkflows/local/ba
 // MODULES
 //
 include { SAMTOOLS_FAIDX                        } from '../modules/local/samtools/faidx/main'
-include { FASTQC     as FASTQC_RAW              } from '../modules/nf-core/modules/nf-core/fastqc/main'
-include { FASTP                                 } from '../modules/nf-core/modules/nf-core/fastp/main'
+include { FASTQC     as FASTQC_RAW_SHORT        } from '../modules/nf-core/modules/nf-core/fastqc/main'
+include { FASTQC     as FASTQC_RAW_LONG         } from '../modules/nf-core/modules/nf-core/fastqc/main'
+include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/modules/nf-core/fastp/main'
+include { FASTP      as FASTP_LONG              } from '../modules/local/fastp/main'
 include { FASTQC     as FASTQC_TRIMMED          } from '../modules/nf-core/modules/nf-core/fastqc/main'
-include { MINIMAP2_ALIGN                        } from '../modules/nf-core/modules/nf-core/minimap2/align/main'
+include { MINIMAP2_ALIGN                        } from '../modules/local/minimap2/align/main'
 include { IVAR_VARIANTS                         } from '../modules/nf-core/modules/nf-core/ivar/variants/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                               } from '../modules/nf-core/modules/nf-core/multiqc/main'
@@ -74,9 +76,6 @@ workflow AQUASCOPE {
 
     // Initialize empty channels and set value channels from params
     ch_versions             = Channel.empty()
-    ch_short_reads          = Channel.empty()
-    ch_long_reads           = Channel.empty()
-    ch_raw_bam              = Channel.empty()
     ch_reads_minimap        = Channel.empty()
     ch_genome_fai           = Channel.empty()
 
@@ -98,27 +97,52 @@ workflow AQUASCOPE {
     ch_versions         = ch_versions.mix(SAMTOOLS_FAIDX.out.versions)
 
     
+    // 
     // MODULE: FastQC on raw data for initial quality checking for short reads
-    FASTQC_RAW (
+    //
+    FASTQC_RAW_SHORT (
         ch_short_reads
     )
-    ch_versions = ch_versions.mix(FASTQC_RAW.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC_RAW_SHORT.out.versions.first())
 
-    // MODULE: Run FastP 
-    ch_trimmed_reads = Channel.empty()
-     FASTP (
+    FASTQC_RAW_LONG (
+        ch_long_reads
+    )
+    ch_versions = ch_versions.mix(FASTQC_RAW_LONG.out.versions.first())
+
+    // 
+    // MODULE: Run FastP for short reads
+    //
+    ch_trimmed_reads_short = Channel.empty()
+    FASTP_SHORT (
         ch_short_reads, [], false, false
     )
-    ch_trimmed_reads = ch_trimmed_reads.mix(FASTP.out.reads)
-    //ch_reads_for_fastqc = ch_trimmed_reads
-    ch_versions      = ch_versions.mix(FASTP.out.versions.first())
+    ch_trimmed_reads_short = ch_trimmed_reads_short.mix(FASTP_SHORT.out.reads)
+    ch_versions = ch_versions.mix(FASTP_SHORT.out.versions.first())
 
+    // 
+    // MODULE: Run FastP for Long reads
+    //
+    ch_trimmed_reads_long = Channel.empty()
+    FASTP_LONG (
+        ch_long_reads, [], false, false
+    )
+    ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
+    ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first())
+
+    // Combine trimmed reads from short and long reads
+    ch_trimmed_reads = ch_trimmed_reads_short.mix(ch_trimmed_reads_long)
+    ch_trimmed_reads.view()
+    
+    // 
     // MODULE: FastQC for final quality checking
+    //
+    
     FASTQC_TRIMMED (
         ch_trimmed_reads
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMMED.out.versions.first())
-
+    
     // 
     // MODULE: Align reads against reference genome
     //
@@ -127,7 +151,7 @@ workflow AQUASCOPE {
     ch_align_bai = Channel.empty()
     
     MINIMAP2_ALIGN (
-        ch_short_reads, ch_genome, true, false, false 
+        ch_trimmed_reads, ch_genome, true, false, false 
     )
     ch_align_bam            = MINIMAP2_ALIGN.out.bam
     ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions.first())
@@ -165,6 +189,7 @@ workflow AQUASCOPE {
     // 
     // MODULE: RUN FREYJA_VARIANT_CALLING
     //
+    
     ch_freyja_variants      = Channel.empty()
     ch_freyja_depths        = Channel.empty()
     ch_freyja_demix         = Channel.empty()
@@ -200,8 +225,10 @@ workflow AQUASCOPE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW.out.zip.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(FASTP.out.json.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_LONG.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
@@ -213,11 +240,11 @@ workflow AQUASCOPE {
     multiqc_report       = MULTIQC.out.report.toList()
 }
 
-/*
-========================================================================================
-    COMPLETION EMAIL AND SUMMARY
-========================================================================================
-*/
+// /*
+// ========================================================================================
+//     COMPLETION EMAIL AND SUMMARY
+// ========================================================================================
+// */
 
 workflow.onComplete {
     if (params.email || params.email_on_fail) {

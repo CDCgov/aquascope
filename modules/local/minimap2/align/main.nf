@@ -33,28 +33,25 @@ process MINIMAP2_ALIGN {
     def minimap2_args = ''
 
     if (platform == 'illumina' || platform == 'iontorrent') {
-        minimap2_args = "-ax sr"
+        minimap2_args = "-x sr"
     } else if (platform == 'nanopore') {
-        minimap2_args = "-ax map-ont"
+        minimap2_args = "-x map-ont"
     } else if (platform == 'pacbio') {
-        minimap2_args = "-ax map-hifi" //Continuous reads shorter than 20kb
+        minimap2_args = "-x map-hifi" //Continuous reads shorter than 20kb
     } else {
         error "Invalid platform argument: ${platform}"
     }
-    def alignment_command = """
-        minimap2 \\
-            $minimap2_args \\
-            -t $task.cpus \\
-            "${reference ? : reads}" \\
-            ${reads} \\
-            $cigar_paf \\
-            $set_cigar_bam \\
-            $bam_output
+    def alignment_command = 
+    """ minimap2 \\
+        $minimap2_args \\
+        -t $task.cpus \\
+        ${reference ?: reads} \\
+        ${reads} \\
+        $cigar_paf \\
+        $set_cigar_bam \\
+        $bam_output """
     """
-
-    """
-    
-    ${alignment_command}
+    ${alignment_command} 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

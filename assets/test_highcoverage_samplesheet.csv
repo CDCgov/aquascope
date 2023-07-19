@@ -1,5 +1,0 @@
-sample,sequencing_platform,fastq_1,fastq_2,strandedness
-SRR15128932,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15128932_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15128932_R2.fastq.gz,unstranded
-//SRR15129107,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15129107_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15129107_R2.fastq.gz,unstranded
-//SRR15202294,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15202294_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15202294_R2.fastq.gz,unstranded
-//SRR15202375,illumina,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15202375_R1.fastq.gz,/scicomp/reference/nextflow/test_datasets/wastewater/High_Coverage_Reads/SRR15202375_R2.fastq.gz,unstranded
