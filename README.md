@@ -51,14 +51,14 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 5. To create additional sample sheets, please follow the format in the samplesheet.csv from assets folder, header has changed from the previous file.
 
-```console
-sample,platform,fastq_1,fastq_2,lr,bam_file
-mock1,illumina,mock_R1.fastq.gz,mock_R2.fastq.gz,,
-mock2,illumina,mock_R1.fastq.gz,,,
-mock3,nanopore,,,mock3_longread.fastq.gz,
-mock4,pacbio,,,mock4_longread.fastq.gz,
-mock5,iontorrent,,,,mock5.bam
-```
+    ```console
+    sample,platform,fastq_1,fastq_2,lr,bam_file
+    mock1,illumina,mock_R1.fastq.gz,mock_R2.fastq.gz,,
+    mock2,illumina,mock_R1.fastq.gz,,,
+    mock3,nanopore,,,mock3_longread.fastq.gz,
+    mock4,pacbio,,,mock4_longread.fastq.gz,
+    mock5,iontorrent,,,,mock5.bam
+    ```
     > * The above format accounts for single- & paired-end data from Illumina, long-reads from nanopore/pacbio and bam_file from iontorrent.
 
     > * However, iontorrent input isn't processed through this pipeline, a subworkflow is in active development.
