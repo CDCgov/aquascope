@@ -86,7 +86,4 @@ workflow INPUT_CHECK {
     raw_long_reads = ch_raw_long_reads
     raw_bam = ch_raw_bam
 
-    raw_short_reads.view()
-    raw_long_reads.view()
-    raw_bam.view()
 }
