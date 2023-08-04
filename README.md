@@ -14,6 +14,11 @@
 [![Follow on Twitter](http://img.shields.io/badge/twitter-%40nf__core-1DA1F2?labelColor=000000&logo=twitter)](https://twitter.com/nf_core)
 [![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)
 
+## NOTE
+
+This project is a successor to the [C-WAP pipeline](https://github.com/CFSAN-Biostatistics/C-WAP).  
+
+
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
@@ -68,9 +73,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 7. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
-    nextflow run main.nf -profile test,<docker/singularity/conda/institute>,<sge,aws,slurm>
-    --input assets/samplesheet.csv
+    nextflow run main.nf -profile test,singularity,sge -bg
     ```
+
     > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
     > * If you are using `singularity` then the pipeline will auto-detect this and attempt to download the Singularity images directly as opposed to performing a conversion from Docker images. If you are persistently observing issues downloading Singularity images directly due to timeout or network issues then please use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, it is highly recommended to use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to pre-download all of the required containers before running the pipeline and to set the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options to be able to store and re-use the images from a central location for future pipeline runs.
     > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
