@@ -22,7 +22,7 @@ This project is a successor to the [C-WAP pipeline](https://github.com/CFSAN-Bio
 ## Introduction
 
 <!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-**nf-core/aquascope** is a bioinformatics best-practice analysis pipeline for Pipeline is for early detection of SC2 variants of concern via shotgun metagenomic sequencing of wastewater.
+**nf-core/aquascope** is a bioinformatics best-practice analysis pipeline for early detection of SC2 variants of concern via shotgun metagenomic sequencing of wastewater.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -37,7 +37,6 @@ On release, automated continuous integration tests run the pipeline on a full-si
 2. Trimming reads  (['Fastp'] (https://github.com/OpenGene/fastp) )
 3. Aligning short reads (['Minimap2] (https://github.com/lh3/minimap2))
 4. Ivar trim aligned reads (['IVAR Trim'] (https://andersen-lab.github.io/ivar/html/manualpage.html))
-5. Classification by Kraken2 (['Kraken2'] (https://ccb.jhu.edu/software/kraken2/)
 6. Freyja Variant classification (['Freyja'] (https://github.com/andersen-lab/Freyja))
 7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
@@ -53,22 +52,30 @@ On release, automated continuous integration tests run the pipeline on a full-si
         https://conda.io/projects/conda/en/latest/user-guide/install/linux.html
     > * Once installation is complete, conda activate <newlycreatedenvironment> && install nextflow('>=22.10.0')
 
-4. The samplesheet.csv & test_highcoverage_samplesheet.csv is in assets folder, that contains path to samples. 
+4. The samplesheet.csv is in assets folder, that contains path to samples reflecting various input types (there are 2 E.coli samples from nanopore that error out on Freyja demix and bootstrap for obvious reasons)
 
-5. To create additional sample sheets, please use the fastq_dir_to_samplesheet.py - but make sure your sample files have _R1 & _R2. 
-	> * Strandedness has to be determined to generate the samplesheet, if you don't know the strandedness, please check with Wet lab folks who generated the data!
-	> * In case, you don't have information on strandedness, use "unstranded" (DNA Seq is bydefault Unstranded, While RNA sequencing is usually stranded)
-	> * CLI, fastq_dir_to_samplesheet.py <full-path to Fastq file directory> -st <forward/reverse/unstranded> samplesheet.csv
+5. To create additional sample sheets, please follow the format in the samplesheet.csv from assets folder, header has changed from the previous file.
 
-6. test.config file already contains path to input, genome fasta, fai, primer (ARCTIC V4_1 primers are used currently), kraken2_human database (default, change as needed)
+    ```console
+    sample,platform,fastq_1,fastq_2,lr,bam_file
+    mock1,illumina,mock_R1.fastq.gz,mock_R2.fastq.gz,,
+    mock2,illumina,mock_R1.fastq.gz,,,
+    mock3,nanopore,,,mock3_longread.fastq.gz,
+    mock4,pacbio,,,mock4_longread.fastq.gz,
+    mock5,iontorrent,,,,mock5.bam
+    ```
+    > * The above format accounts for single- & paired-end data from Illumina, long-reads from nanopore/pacbio and bam_file from iontorrent.
+
+    > * However, iontorrent input isn't processed through this pipeline, a subworkflow is in active development.
+
+6. test.config file already contains path to input, genome fasta, fai, primer (ARCTIC V4_1 & ARCTIC_V3 primers are used currently).
 
 7. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
-    nextflow run main.nf -profile test,<docker/singularity/conda/institute> [-with-conda true]
+    nextflow run main.nf -profile test,singularity,sge -bg
     ```
 
-    > * If you are using `-profile test,conda` (or `-profile conda` on real data) it is necessary to add `-with-conda true` to your command. This will enable `conda` to manage environments for your compute environment.
     > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
     > * If you are using `singularity` then the pipeline will auto-detect this and attempt to download the Singularity images directly as opposed to performing a conversion from Docker images. If you are persistently observing issues downloading Singularity images directly due to timeout or network issues then please use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, it is highly recommended to use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to pre-download all of the required containers before running the pipeline and to set the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options to be able to store and re-use the images from a central location for future pipeline runs.
     > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
@@ -76,10 +83,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 8. Start running your own analysis!
 
-    <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
     ```console
-    nextflow run main.nf -profile <docker/singularity/conda/institute> --input samplesheet.csv
+    nextflow run main.nf -profile <docker/singularity/conda/institute> --input samplesheet.csv --fasta assets/references/wuhan.fa --fai assets/references/wuhan.fai --gff assets/references/wuhan.GFF3 --bedfile assets/ARTICv4_1.bed --outdir results
     ```
 9. For Custom Reference files and Inputs, please use the following command:
 
@@ -103,8 +108,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 3. For `Docker` issues, for non-Scicomp users, please check with your sys admin to chart out a course to run this pipeline on your systems
 
 4. For `security certificate` issues, reach out to your sys admin to set the ca-certificates (only needed if you didn't already set it up)
+    
     ```console
-    export REQUESTS_CA_BUNDLE=<path to .pem>
+    export REQUESTS_CA_BUNDLE=<path to .pem> specific to cdc users!
 
     ```
 5. For `java` issues, please use the nextflow recommended version and set the environment variable for TMPDIR (refer to 2)
