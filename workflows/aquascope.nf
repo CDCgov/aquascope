@@ -108,7 +108,6 @@ workflow AQUASCOPE {
     FASTQC_RAW_LONG (
         ch_long_reads
     )
-    ch_versions = ch_versions.mix(FASTQC_RAW_LONG.out.versions.first())
 
     // 
     // MODULE: Run FastP for short reads
@@ -128,7 +127,6 @@ workflow AQUASCOPE {
         ch_long_reads, [], false, false
     )
     ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
-    ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first())
 
     // Combine trimmed reads from short and long reads
     ch_trimmed_reads = ch_trimmed_reads_short.mix(ch_trimmed_reads_long)
@@ -141,7 +139,6 @@ workflow AQUASCOPE {
     FASTQC_TRIMMED (
         ch_trimmed_reads
     )
-    ch_versions = ch_versions.mix(FASTQC_TRIMMED.out.versions.first())
     
     // 
     // MODULE: Align reads against reference genome
