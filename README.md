@@ -27,9 +27,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 2. Trimming reads  (['Fastp'] (https://github.com/OpenGene/fastp) )
 3. Aligning short reads (['Minimap2] (https://github.com/lh3/minimap2))
 4. Ivar trim aligned reads (['IVAR Trim'] (https://andersen-lab.github.io/ivar/html/manualpage.html))
-5. Classification by Kraken2 (['Kraken2'] (https://ccb.jhu.edu/software/kraken2/)
-6. Freyja Variant classification (['Freyja'] (https://github.com/andersen-lab/Freyja))
-7. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+5. Freyja Variant classification (['Freyja'] (https://github.com/andersen-lab/Freyja))
+6. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
 
