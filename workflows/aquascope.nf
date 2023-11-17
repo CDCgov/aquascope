@@ -53,6 +53,7 @@ include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/modul
 include { FASTP      as FASTP_LONG              } from '../modules/local/fastp/main'
 include { FASTQC     as FASTQC_TRIMMED          } from '../modules/nf-core/modules/nf-core/fastqc/main'
 include { MINIMAP2_ALIGN                        } from '../modules/local/minimap2/align/main'
+include { REHEADER_BAM                          } from '../modules/local/check_bam.nf'
 include { IVAR_VARIANTS                         } from '../modules/nf-core/modules/nf-core/ivar/variants/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                               } from '../modules/nf-core/modules/nf-core/multiqc/main'
@@ -88,7 +89,12 @@ workflow AQUASCOPE {
     ch_long_reads            = INPUT_CHECK.out.raw_long_reads
     ch_raw_bam               = INPUT_CHECK.out.raw_bam
 
-    
+
+    // MODULE: PICARD SAMTOFASTQ 
+
+
+    // take the output and channel it to fastp and fastqc
+	    
     // MODULE: Create Fasta Index file using samtools faidx
     SAMTOOLS_FAIDX (
         ch_genome 
@@ -151,17 +157,26 @@ workflow AQUASCOPE {
         ch_trimmed_reads, ch_genome, true, false, false 
     )
     ch_align_bam            = MINIMAP2_ALIGN.out.bam
-    ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions.first())
+    ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
 
+    //
+    // MODULE: Rehader and Sort the INPUT BAM from Ion-Torrent
+    //
+    ch_rehead_sorted_bam = Channel.empty()   
+    REHEADER_BAM (
+        ch_raw_bam
+    )
+    ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
+    ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
     
     // 
     // MODULE: RUN IVAR_TRIM_SORT
     //
-
     ch_sort_bam = Channel.empty()
     ch_sort_bai = Channel.empty()
-    IVAR_TRIMMING_SORTING(
-        ch_align_bam
+    ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam)
+
+    IVAR_TRIMMING_SORTING( ch_combined_sort_bam
     )
     ch_sort_bam = ch_sort_bam.mix(IVAR_TRIMMING_SORTING.out.bam)
     ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
@@ -169,7 +184,7 @@ workflow AQUASCOPE {
     // 
     // MODULE: Identify variants with iVar
     //
-
+    
     ch_ivar_vcf = Channel.empty()
     IVAR_VARIANTS(
         ch_sort_bam, 

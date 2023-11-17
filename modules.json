@@ -75,6 +75,9 @@
             "nf-core/samtools/mpileup": {
                 "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
             },
+            "nf-core/samtools/reheader": {
+                "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5"
+            },
             "nf-core/samtools/sort": {
                 "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
             },
@@ -83,6 +86,12 @@
             },
             "nf-core/samtools/view": {
                 "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
+            },
+            "nf-core/sratools/fasterqdump": {
+                "git_sha": "6712754854ae2832abfff3f0800cdb4a6a60bfca"
+            },
+            "nf-core/sratools/prefetch": {
+                "git_sha": "6712754854ae2832abfff3f0800cdb4a6a60bfca"
             }
         }
     }
