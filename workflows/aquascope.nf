@@ -52,6 +52,8 @@ include { FASTQC     as FASTQC_RAW_LONG         } from '../modules/nf-core/modul
 include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/modules/nf-core/fastp/main'
 include { FASTP      as FASTP_LONG              } from '../modules/local/fastp/main'
 include { FASTQC     as FASTQC_TRIMMED          } from '../modules/nf-core/modules/nf-core/fastqc/main'
+include { KRAKEN2_KRAKEN2 as KRAKEN2_STD        } from '../modules/nf-core/modules/nf-core/kraken2/kraken2/main'
+include { QUALIMAP_BAMQC                        } from '../modules/nf-core/modules/nf-core/qualimap/bamqc/main'
 include { MINIMAP2_ALIGN                        } from '../modules/local/minimap2/align/main'
 include { REHEADER_BAM                          } from '../modules/local/check_bam.nf'
 include { IVAR_VARIANTS                         } from '../modules/nf-core/modules/nf-core/ivar/variants/main'
@@ -94,7 +96,7 @@ workflow AQUASCOPE {
 
 
     // take the output and channel it to fastp and fastqc
-	    
+    
     // MODULE: Create Fasta Index file using samtools faidx
     SAMTOOLS_FAIDX (
         ch_genome 
@@ -114,6 +116,7 @@ workflow AQUASCOPE {
     FASTQC_RAW_LONG (
         ch_long_reads
     )
+    ch_versions = ch_versions.mix(FASTQC_RAW_LONG.out.versions.first())
 
     // 
     // MODULE: Run FastP for short reads
@@ -133,6 +136,7 @@ workflow AQUASCOPE {
         ch_long_reads, [], false, false
     )
     ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
+    ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first())
 
     // Combine trimmed reads from short and long reads
     ch_trimmed_reads = ch_trimmed_reads_short.mix(ch_trimmed_reads_long)
@@ -145,6 +149,21 @@ workflow AQUASCOPE {
     FASTQC_TRIMMED (
         ch_trimmed_reads
     )
+    ch_versions = ch_versions.mix(FASTQC_TRIMMED.out.versions.first())
+
+    
+    // 
+    // MODULE: KRAKEN2 to check for human and bacterial reads
+   
+   ch_kraken2_multiqc = Channel.empty()
+   KRAKEN2_STD (
+        ch_trimmed_reads,
+        params.kraken_db_std,
+        true,
+        true
+    )
+    ch_kraken2_multiqc = KRAKEN2_STD.out.report
+
     
     // 
     // MODULE: Align reads against reference genome
@@ -157,7 +176,7 @@ workflow AQUASCOPE {
         ch_trimmed_reads, ch_genome, true, false, false 
     )
     ch_align_bam            = MINIMAP2_ALIGN.out.bam
-    ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions)
+    ch_versions             = ch_versions.mix(MINIMAP2_ALIGN.out.versions.first())
 
     //
     // MODULE: Rehader and Sort the INPUT BAM from Ion-Torrent
@@ -169,22 +188,38 @@ workflow AQUASCOPE {
     ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
     ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
     
+
+    //
+    // MODULE : QUALIMAP for post-alignment BAM QC
+    //
+
+    QUALIMAP_BAMQC (
+                ch_align_bam,
+                params.bed
+            )
+    ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
+    ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
+
+    
     // 
     // MODULE: RUN IVAR_TRIM_SORT
     //
+
     ch_sort_bam = Channel.empty()
     ch_sort_bai = Channel.empty()
     ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam)
 
-    IVAR_TRIMMING_SORTING( ch_combined_sort_bam
+    IVAR_TRIMMING_SORTING(
+        ch_combined_sort_bam
     )
-    ch_sort_bam = ch_sort_bam.mix(IVAR_TRIMMING_SORTING.out.bam)
-    ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
+    ch_sort_bam   = ch_sort_bam.mix(IVAR_TRIMMING_SORTING.out.bam)
+    ch_ivar_stats = IVAR_TRIMMING_SORTING.out.stats
+    ch_versions   = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
 
     // 
     // MODULE: Identify variants with iVar
     //
-    
+
     ch_ivar_vcf = Channel.empty()
     IVAR_VARIANTS(
         ch_sort_bam, 
@@ -194,7 +229,6 @@ workflow AQUASCOPE {
         params.save_mpileup // default is false, change it to true in nextflow.config file
     )
     ch_ivar_vcf     = IVAR_VARIANTS.out.tsv
-    ch_ivar_mpileup = IVAR_VARIANTS.out.mpileup
     ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first())
 
 
@@ -236,12 +270,17 @@ workflow AQUASCOPE {
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    //ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_LONG.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_kraken2_multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{it[1]}.ifEmpty([]))
+
 
     MULTIQC (
         ch_multiqc_files.collect(),

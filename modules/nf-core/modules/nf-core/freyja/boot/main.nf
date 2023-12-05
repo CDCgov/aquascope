@@ -46,7 +46,7 @@ process FREYJA_BOOT {
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    touch ${prefix}_lineage.csv
+    touch  ${prefix}_lineage.csv
     touch ${prefix}_summarized.csv
 
     cat <<-END_VERSIONS > versions.yml

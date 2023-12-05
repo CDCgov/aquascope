@@ -74,7 +74,7 @@ workflow FREYJA_VARIANT_CALLING {
     depths         = FREYJA_VARIANTS.out.depths    // channel: [ val(meta), path(depths_tsv) ]
     demix          = FREYJA_DEMIX.out.demix        // channel: [ val(meta), path(demix_tsv) ]
     lineages       = FREYJA_BOOT.out.lineages      // channel: [ val(meta), path(lineages_csv) ]
-    summarized     = FREYJA_BOOT.out.summarized    // channel: [ val(meta), path(summarized_csv) ]
+    summarized     = FREYJA_BOOT.out.summarized    // channel: [ val(meta), path(summarized_csv) ]]
     barcodes       = ch_barcodes                   // channel: [ val(meta), path(barcodes) ]
     lineages_meta  = ch_lineages_meta              // channel: [ val(meta), path(lineages_meta) ]
     versions       = ch_versions                   // channel: [ path(versions.yml) ]

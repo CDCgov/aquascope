@@ -22,7 +22,7 @@ process REHEADER_BAM {
     // Script to run within the container
     script:
     """
-    bash ${projectDir}/bin/reheaderbam.sh $bam
+    bash reheaderbam.sh $bam
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
