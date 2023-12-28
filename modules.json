@@ -60,8 +60,17 @@
             "nf-core/multiqc": {
                 "git_sha": "ee80d14721e76e2e079103b8dcd5d57129e584ba"
             },
+            "nf-core/nanoplot": {
+                "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5"
+            },
             "nf-core/pangolin": {
                 "git_sha": "911696ea0b62df80e900ef244d7867d177971f73"
+            },
+            "nf-core/qualimap/bamqccram": {
+                "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5"
+            },
+            "nf-core/qualimap/rnaseq": {
+                "git_sha": "7293949d9580556da0e04dffedcbdd1855114343"
             },
             "nf-core/samtools/flagstat": {
                 "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
@@ -74,9 +83,6 @@
             },
             "nf-core/samtools/mpileup": {
                 "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"
-            },
-            "nf-core/samtools/reheader": {
-                "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5"
             },
             "nf-core/samtools/sort": {
                 "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b"

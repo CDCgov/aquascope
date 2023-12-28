@@ -48,10 +48,11 @@ include { FREYJA_VARIANT_CALLING                } from '../subworkflows/local/ba
 //
 include { SAMTOOLS_FAIDX                        } from '../modules/local/samtools/faidx/main'
 include { FASTQC     as FASTQC_RAW_SHORT        } from '../modules/nf-core/modules/nf-core/fastqc/main'
-include { FASTQC     as FASTQC_RAW_LONG         } from '../modules/nf-core/modules/nf-core/fastqc/main'
+include { NANOPLOT   as NANOPLOT_RAW_LONG       } from '../modules/nf-core/modules/nf-core/nanoplot/main'
 include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/modules/nf-core/fastp/main'
 include { FASTP      as FASTP_LONG              } from '../modules/local/fastp/main'
-include { FASTQC     as FASTQC_TRIMMED          } from '../modules/nf-core/modules/nf-core/fastqc/main'
+include { FASTQC     as FASTQC_SHORT_TRIMMED    } from '../modules/nf-core/modules/nf-core/fastqc/main'
+include { NANOPLOT   as NANOPLOT_LONG_TRIMMED   } from '../modules/nf-core/modules/nf-core/nanoplot/main'
 include { KRAKEN2_KRAKEN2 as KRAKEN2_STD        } from '../modules/nf-core/modules/nf-core/kraken2/kraken2/main'
 include { QUALIMAP_BAMQC                        } from '../modules/nf-core/modules/nf-core/qualimap/bamqc/main'
 include { MINIMAP2_ALIGN                        } from '../modules/local/minimap2/align/main'
@@ -113,10 +114,10 @@ workflow AQUASCOPE {
     )
     ch_versions = ch_versions.mix(FASTQC_RAW_SHORT.out.versions.first())
 
-    FASTQC_RAW_LONG (
+    NANOPLOT_RAW_LONG (
         ch_long_reads
     )
-    ch_versions = ch_versions.mix(FASTQC_RAW_LONG.out.versions.first())
+    ch_versions = ch_versions.mix(NANOPLOT_RAW_LONG.out.versions.first())
 
     // 
     // MODULE: Run FastP for short reads
@@ -138,18 +139,25 @@ workflow AQUASCOPE {
     ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
     ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first())
 
-    // Combine trimmed reads from short and long reads
-    ch_trimmed_reads = ch_trimmed_reads_short.mix(ch_trimmed_reads_long)
-    ch_trimmed_reads.view()
-    
     // 
     // MODULE: FastQC for final quality checking
     //
     
-    FASTQC_TRIMMED (
-        ch_trimmed_reads
+    FASTQC_SHORT_TRIMMED (
+        ch_trimmed_reads_short
     )
-    ch_versions = ch_versions.mix(FASTQC_TRIMMED.out.versions.first())
+    ch_versions = ch_versions.mix(FASTQC_SHORT_TRIMMED.out.versions.first())
+
+
+    // 
+    // MODULE: NANOPLOT_TRIMMED for final quality checking
+    //
+
+    NANOPLOT_LONG_TRIMMED (
+        ch_trimmed_reads_long
+        )
+    ch_versions = ch_versions.mix(NANOPLOT_LONG_TRIMMED.out.versions.first())
+
 
     
     // 
@@ -188,33 +196,54 @@ workflow AQUASCOPE {
     ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
     ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
     
-
+    ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam)
     //
     // MODULE : QUALIMAP for post-alignment BAM QC
     //
 
     QUALIMAP_BAMQC (
-                ch_align_bam,
+                ch_combined_sort_bam,
                 params.bed
             )
     ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
     ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
 
-    
     // 
-    // MODULE: RUN IVAR_TRIM_SORT
+    // MODULE: RUN IVAR_SORT - Only IonTorrent -- The BAM is already sorted, but the IVAR trim is changing something thats not causing error in Freyja. 
+    //But if the iontorrent bam isn't ivar trimmed, its causing error in Freyja
     //
 
-    ch_sort_bam = Channel.empty()
-    ch_sort_bai = Channel.empty()
-    ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam)
-
-    IVAR_TRIMMING_SORTING(
-        ch_combined_sort_bam
+   /* ch_sorted_mixedbam = Channel.empty()
+    ch_sorted_mixedbai = Channel.empty()
+    
+    IVAR_SORTING_IONTORRENT(
+        ch_rehead_sorted_bam
     )
-    ch_sort_bam   = ch_sort_bam.mix(IVAR_TRIMMING_SORTING.out.bam)
-    ch_ivar_stats = IVAR_TRIMMING_SORTING.out.stats
-    ch_versions   = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
+    ch_sort_ionbam   = ch_sort_bam.mix(IVAR_SORTING_IONTORRENT.out.bam)
+    ch_ivar_ionstats = IVAR_SORTING_IONTORRENT.out.stats
+    ch_versions   = ch_versions.mix(IVAR_SORTING_IONTORRENT.out.versions) */
+
+
+    
+    // 
+    // MODULE: RUN IVAR_TRIM_SORT - Illumina, ONT, PacBio
+    //
+
+    ch_ivar_sort_bam = Channel.empty()
+    ch_ivar_sort_bai = Channel.empty()
+    
+    IVAR_TRIMMING_SORTING(
+        ch_align_bam
+    )
+    ch_ivar_sort_bam   = ch_sort_bam.mix(IVAR_TRIMMING_SORTING.out.bam)
+    ch_ivar_stats      = IVAR_TRIMMING_SORTING.out.stats
+    ch_versions        = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
+
+
+
+    // Mix channels from IVAR_TRIMMING_SORTING AND IVAR_SORTING_IONTORRENT
+
+    ch_sorted_mixedbam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
 
     // 
     // MODULE: Identify variants with iVar
@@ -222,7 +251,7 @@ workflow AQUASCOPE {
 
     ch_ivar_vcf = Channel.empty()
     IVAR_VARIANTS(
-        ch_sort_bam, 
+        ch_sorted_mixedbam, 
         ch_genome,          // Assuming the reference and this are the same 
         ch_genome_fai,
         params.gff, 
@@ -242,7 +271,7 @@ workflow AQUASCOPE {
     ch_freyja_lineages      = Channel.empty()
     ch_freyja_summarized    = Channel.empty()
     FREYJA_VARIANT_CALLING(
-        ch_sort_bam, 
+        ch_sorted_mixedbam, 
         ch_genome,
         params.freyja_repeats,
         params.freyja_db_name,
@@ -272,10 +301,11 @@ workflow AQUASCOPE {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     //ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_LONG.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_RAW_LONG.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
+    ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_LONG_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_kraken2_multiqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{it[1]}.ifEmpty([]))
