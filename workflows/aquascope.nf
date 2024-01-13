@@ -13,7 +13,7 @@ WorkflowAquascope.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 
-def checkPathParamList = [ params.input, params.fasta, params.bedfile, params.freyja_barcodes, params.freyja_lineages_meta]
+def checkPathParamList = [ params.input, params.fasta, params.short_bedfile, params.long_bedfile, params.freyja_barcodes, params.freyja_lineages_meta]
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -84,7 +84,6 @@ workflow AQUASCOPE {
     ch_genome_fai           = Channel.empty()
 
     ch_genome               = params.fasta                ? Channel.value(file( "${params.fasta}" ))                : Channel.empty()        
-    ch_bedfile              = params.bedfile              ? Channel.value(file( "${params.bedfile}" ))              : Channel.empty()
     
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     INPUT_CHECK ()
@@ -158,25 +157,27 @@ workflow AQUASCOPE {
         )
     ch_versions = ch_versions.mix(NANOPLOT_LONG_TRIMMED.out.versions.first())
 
-
     
     // 
     // MODULE: KRAKEN2 to check for human and bacterial reads
-   
-   ch_kraken2_multiqc = Channel.empty()
-   KRAKEN2_STD (
-        ch_trimmed_reads,
-        params.kraken_db_std,
-        true,
-        true
-    )
-    ch_kraken2_multiqc = KRAKEN2_STD.out.report
+    ch_trimmed_reads = Channel.empty()
 
-    
+    ch_kraken2_multiqc = Channel.empty()
+
+    if(params.kraken != false){
+        KRAKEN2_STD (
+                ch_trimmed_reads_short,
+                params.kraken_db_std,
+                true,
+                true
+            )
+        ch_kraken2_multiqc = KRAKEN2_STD.out.report
+
+    }
     // 
     // MODULE: Align reads against reference genome
     //
-
+    ch_trimmed_reads = ch_trimmed_reads_short.mix(ch_trimmed_reads_long)
     ch_align_bam = Channel.empty()
     ch_align_bai = Channel.empty()
     
@@ -196,7 +197,7 @@ workflow AQUASCOPE {
     ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
     ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
     
-    ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam)
+    ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam) //Combining NY bam with all other samples for usage in Qualimap only.
     //
     // MODULE : QUALIMAP for post-alignment BAM QC
     //
@@ -209,24 +210,7 @@ workflow AQUASCOPE {
     ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
 
     // 
-    // MODULE: RUN IVAR_SORT - Only IonTorrent -- The BAM is already sorted, but the IVAR trim is changing something thats not causing error in Freyja. 
-    //But if the iontorrent bam isn't ivar trimmed, its causing error in Freyja
-    //
-
-   /* ch_sorted_mixedbam = Channel.empty()
-    ch_sorted_mixedbai = Channel.empty()
-    
-    IVAR_SORTING_IONTORRENT(
-        ch_rehead_sorted_bam
-    )
-    ch_sort_ionbam   = ch_sort_bam.mix(IVAR_SORTING_IONTORRENT.out.bam)
-    ch_ivar_ionstats = IVAR_SORTING_IONTORRENT.out.stats
-    ch_versions   = ch_versions.mix(IVAR_SORTING_IONTORRENT.out.versions) */
-
-
-    
-    // 
-    // MODULE: RUN IVAR_TRIM_SORT - Illumina, ONT, PacBio
+    // MODULE: RUN IVAR_TRIM_SORT - Illumina, ONT, PacBio only
     //
 
     ch_ivar_sort_bam = Channel.empty()
@@ -235,15 +219,16 @@ workflow AQUASCOPE {
     IVAR_TRIMMING_SORTING(
         ch_align_bam
     )
-    ch_ivar_sort_bam   = ch_sort_bam.mix(IVAR_TRIMMING_SORTING.out.bam)
+    ch_ivar_sort_bam   = IVAR_TRIMMING_SORTING.out.bam
     ch_ivar_stats      = IVAR_TRIMMING_SORTING.out.stats
     ch_versions        = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
 
 
+    //For now, we are mixing IVAR_TRIMMING_SORTING with Reheadered IonTorrent bam file
 
-    // Mix channels from IVAR_TRIMMING_SORTING AND IVAR_SORTING_IONTORRENT
-
-    ch_sorted_mixedbam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
+    ch_sorted_mixedbam = ch_ivar_sort_bam.mix(
+        ch_rehead_sorted_bam
+        ) // Here we are mixing IVAR trimmed illumina & long reads to Iontorrent bam files for usage in variant calling
 
     // 
     // MODULE: Identify variants with iVar
@@ -285,11 +270,11 @@ workflow AQUASCOPE {
     ch_freyja_summarized    = FREYJA_VARIANT_CALLING.out.summarized
     ch_versions             = ch_versions.mix(FREYJA_VARIANT_CALLING.out.versions)
 
-    // MODULE: Pipeline reporting
+/*     // MODULE: Pipeline reporting
     CUSTOM_DUMPSOFTWAREVERSIONS (
         ch_versions.unique().collectFile(name: 'collated_versions.yml')
     )
-
+ */
     // MODULE: MultiQC
     workflow_summary    = WorkflowAquascope.paramsSummaryMultiqc(workflow, summary_params)
     ch_workflow_summary = Channel.value(workflow_summary)
@@ -299,13 +284,13 @@ workflow AQUASCOPE {
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    //ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    //ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.collect())
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_RAW_LONG.out.zip.collect{it[1]}.ifEmpty([]))
+    //ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_RAW_LONG.out.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_LONG_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
+    //ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_LONG_TRIMMED.out.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_kraken2_multiqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{it[1]}.ifEmpty([]))

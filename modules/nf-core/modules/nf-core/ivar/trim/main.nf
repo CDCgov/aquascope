@@ -8,8 +8,7 @@ process IVAR_TRIM {
         'quay.io/biocontainers/ivar:1.4--h6b7c446_1' }"
 
     input:
-    tuple val(meta), path(bam) //, path(bai)
-    path bed
+    tuple val(meta), path(bam)
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
@@ -22,13 +21,19 @@ process IVAR_TRIM {
     script:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    def platform = "${meta.platform}"
+    def bedfile = platform == 'nanopore' || platform == 'pacbio' ? "${params.long_bedfile}" : "${params.short_bedfile}"
+    
+    def ivar_trim_command =
     """
     ivar trim \\
         $args \\
         -i $bam \\
-        -b $bed \\
-        -p $prefix \\
-        > ${prefix}.ivar.log
+        -b ${bedfile} \\
+        -p ${prefix} \\
+        > ${prefix}.ivar.log """
+    """
+    ${ivar_trim_command}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

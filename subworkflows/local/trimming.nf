@@ -6,8 +6,6 @@ include { IVAR_TRIM                             } from '../../modules/nf-core/mo
 include { BAM_SORT_STATS_SAMTOOLS               } from './bam_sort_stats_samtools/main'
 
 
-
-params.bedfile  = params.bedfile ? Channel.value(file( "${params.bedfile}" )) : Channel.empty()
 params.fasta    = params.fasta ? Channel.value(file( "${params.fasta}")) : Channel.empty()
 
 workflow TRIMMING   {
@@ -21,7 +19,7 @@ workflow TRIMMING   {
     ch_sorted_bam           = Channel.empty()
 
     IVAR_TRIM(
-        bam, params.bedfile
+        bam
     )
     ch_versions = ch_versions.mix(IVAR_TRIM.out.versions.first())
 
