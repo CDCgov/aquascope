@@ -1,5 +1,4 @@
 sample,platform,fastq_1,fastq_2,lr,bam_file,bedfile
 SAMPLE1_PE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R2.fastq.gz,,,/scicomp/home-pure/tzx6/Documents/CDCgov/aquascope/assets/ARTICv3.bed
 SAMPLE1_SE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R1.fastq.gz,,,,/scicomp/home-pure/tzx6/Documents/CDCgov/aquascope/assets/ARTICv3.bed
-SRR11140744,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/sispa/SRR11140744_R1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/sispa/SRR11140744_R2.fastq.gz,,,/scicomp/home-pure/tzx6/Documents/CDCgov/aquascope/assets/ARTICv4_1.bed
-SRR10948474,nanopore,,,https://raw.githubusercontent.com/nf-core/test-datasets/covid19/nanopore/SRR10948474.fastq.gz,,/scicomp/home-pure/tzx6/Documents/CDCgov/aquascope/assets/vss2a.bed
+SRR10948474,nanopore,,,https://raw.githubusercontent.com/nf-core/test-datasets/covid19/nanopore/SRR10948474.fastq.gz,,/scicomp/home-pure/tzx6/Documents/CDCgov/aquascope/assets/ARTICv3.bed
