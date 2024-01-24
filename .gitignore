@@ -8,3 +8,5 @@ testing*
 *.pyc
 .gitignore
 .vscode/
+.git/
+.github/
