@@ -13,7 +13,7 @@ WorkflowAquascope.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 
-def checkPathParamList = [ params.input, params.fasta, params.short_bedfile, params.long_bedfile, params.freyja_barcodes, params.freyja_lineages_meta]
+def checkPathParamList = [ params.input, params.fasta, params.freyja_barcodes, params.freyja_lineages_meta]
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -82,7 +82,6 @@ workflow AQUASCOPE {
     ch_versions             = Channel.empty()
     ch_reads_minimap        = Channel.empty()
     ch_genome_fai           = Channel.empty()
-
     ch_genome               = params.fasta                ? Channel.value(file( "${params.fasta}" ))                : Channel.empty()        
     
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -204,7 +203,7 @@ workflow AQUASCOPE {
 
     QUALIMAP_BAMQC (
                 ch_combined_sort_bam,
-                params.bed
+                params.gff
             )
     ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
     ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
