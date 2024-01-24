@@ -15,16 +15,6 @@ class WorkflowAquascope {
             log.error "Genome fasta file not specified with e.g. '--fasta genome.fa' or via a detectable config file."
             System.exit(1)
         }
-
-        if(!params.short_bedfile) {
-            log.error "Primer bed file for illumina not specified with e.g. '--short_bedfile primer.bed or via a detectable config file."
-            System.exit(1)
-        }
-
-        if(!params.long_bedfile) {
-            log.error "Primer bed file for nanopore or pacbio not specified with e.g. '--short_bedfile primer.bed or via a detectable config file."
-            System.exit(1)
-        }
     }
 
     //
