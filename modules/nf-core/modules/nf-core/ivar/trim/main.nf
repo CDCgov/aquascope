@@ -22,7 +22,7 @@ process IVAR_TRIM {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     def platform = "${meta.platform}"
-    def bedfile = platform == 'nanopore' || platform == 'pacbio' ? "${params.long_bedfile}" : "${params.short_bedfile}"
+    def bedfile = "${meta.bedfile}"
     
     def ivar_trim_command =
     """
