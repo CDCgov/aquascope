@@ -19,7 +19,8 @@ workflow INPUT_CHECK {
                     def fastq_2 = row.fastq_2 ? file(row.fastq_2, checkIfExists: true) : false
                     def lr = (platform == 'nanopore' || platform == 'pacbio') ? (row.lr ? file(row.lr, checkIfExists: true) : false) : false
                     def bam_file = (platform == 'iontorrent') ? (row.bam_file ? file(row.bam_file, checkIfExists: true) : false) : false
-                    def bedfile = row.bedfile ? file(row.bedfile, checkIfExists: true) : null
+                    def bedfile = row.bedfile ? row.bedfile.toString() : null
+                    print "Bedfile being used: ${id} : ${bedfile}"
 
                     if ((platform == 'nanopore' || platform == 'pacbio') && !lr) {
                         exit 1, "Invalid input samplesheet: ${platform} platform requires long reads to be specified."
@@ -43,9 +44,9 @@ workflow INPUT_CHECK {
                 meta.single_end = !fastq_2
                 meta.bedfile = bedfile
                 if (fastq_2) {
-                    return [meta, [fastq_1, fastq_2], bedfile]
+                    return [meta, [fastq_1, fastq_2]]
                 } else {
-                    return [meta, [fastq_1], bedfile]
+                    return [ meta, [fastq_1]]
                 }
             }
         ch_raw_long_reads = ch_input_rows.filter { it[1] == 'nanopore' || it[1] == 'pacbio' }
@@ -55,7 +56,7 @@ workflow INPUT_CHECK {
                     meta.id = id
                     meta.platform = platform
                     meta.bedfile = bedfile
-                    return [meta, lr, bedfile]
+                    return [ meta, lr]
                 }
             }
         ch_raw_bam = ch_input_rows.filter { it[1] == 'iontorrent' }
@@ -66,12 +67,12 @@ workflow INPUT_CHECK {
                     meta.platform = platform
                     return [meta, bam_file]
                 } else {
-            def meta = [:]
-            meta.id = id
-            meta.platform = platform
-            return [meta, null]  
+                    def meta = [:]
+                    meta.id = id
+                    meta.platform = platform
+                    return [meta, null]  
+                }
             }
-        }
     } else {
         ch_raw_short_reads = Channel.fromFilePairs(params.input, size: 2)
             .ifEmpty { exit 1, "Cannot find any reads matching: ${params.input}. Please make sure the correct combination of short_reads_1 and short_reads_2 is provided for Illumina data." }
@@ -87,11 +88,11 @@ workflow INPUT_CHECK {
         ch_raw_bam = Channel.empty()
     }
 
-    // Ensure sample IDs are unique
-/*     ch_input_rows
-        .map { id -> id }
+     // Ensure sample IDs are unique
+    ch_input_rows
+        .map { id, platform, fastq_1, fastq_2, lr, bam_file, bedfile -> id }
         .toList()
-        .map { ids -> if (ids.size() != ids.unique().size()) { exit 1, "ERROR: input samplesheet contains duplicated sample IDs!" } } */
+        .map { ids -> if (ids.size() != ids.unique().size()) { exit 1, "ERROR: input samplesheet contains duplicated sample IDs!" } }
 
     emit:
     raw_short_reads = ch_raw_short_reads
