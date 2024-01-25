@@ -56,7 +56,7 @@ include { NANOPLOT   as NANOPLOT_LONG_TRIMMED   } from '../modules/nf-core/modul
 include { KRAKEN2_KRAKEN2 as KRAKEN2_STD        } from '../modules/nf-core/modules/nf-core/kraken2/kraken2/main'
 include { QUALIMAP_BAMQC                        } from '../modules/nf-core/modules/nf-core/qualimap/bamqc/main'
 include { MINIMAP2_ALIGN                        } from '../modules/local/minimap2/align/main'
-include { REHEADER_BAM                          } from '../modules/local/check_bam.nf'
+include { REHEADER_BAM                          } from '../modules/local/reheader_bam.nf'
 include { IVAR_VARIANTS                         } from '../modules/nf-core/modules/nf-core/ivar/variants/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS           } from '../modules/nf-core/modules/nf-core/custom/dumpsoftwareversions/main'
 include { MULTIQC                               } from '../modules/nf-core/modules/nf-core/multiqc/main'
@@ -135,8 +135,6 @@ workflow AQUASCOPE {
         ch_long_reads, [], false, false
     )
     ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
-    ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first())
-
     // 
     // MODULE: FastQC for final quality checking
     //
@@ -144,8 +142,6 @@ workflow AQUASCOPE {
     FASTQC_SHORT_TRIMMED (
         ch_trimmed_reads_short
     )
-    ch_versions = ch_versions.mix(FASTQC_SHORT_TRIMMED.out.versions.first())
-
 
     // 
     // MODULE: NANOPLOT_TRIMMED for final quality checking
@@ -154,8 +150,6 @@ workflow AQUASCOPE {
     NANOPLOT_LONG_TRIMMED (
         ch_trimmed_reads_long
         )
-    ch_versions = ch_versions.mix(NANOPLOT_LONG_TRIMMED.out.versions.first())
-
     
     // 
     // MODULE: KRAKEN2 to check for human and bacterial reads
@@ -195,7 +189,7 @@ workflow AQUASCOPE {
     )
     ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
     ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
-    
+
     ch_combined_sort_bam = ch_align_bam.mix(ch_rehead_sorted_bam) //Combining NY bam with all other samples for usage in Qualimap only.
     //
     // MODULE : QUALIMAP for post-alignment BAM QC
