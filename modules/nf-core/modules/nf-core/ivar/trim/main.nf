@@ -24,14 +24,21 @@ process IVAR_TRIM {
     def platform = "${meta.platform}"
     def bedfile = "${meta.bedfile}"
     
+    def bedfile_basename =  "${bedfile}".tokenize('/').last()
+
     def ivar_trim_command =
     """
+    # Download the BED file using wget
+    wget $bedfile -O $bedfile_basename
+    
     ivar trim \\
         $args \\
         -i $bam \\
-        -b ${bedfile} \\
+        -b $bedfile_basename \\
         -p ${prefix} \\
-        > ${prefix}.ivar.log """
+        > ${prefix}.ivar.log
+    """
+
     """
     ${ivar_trim_command}
 
