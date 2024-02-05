@@ -23,28 +23,30 @@ process IVAR_TRIM {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def platform = "${meta.platform}"
     def bedfile = "${meta.bedfile}"
-    
-    def bedfile_basename =  "${bedfile}".tokenize('/').last()
+    def bedfile_basename = "${bedfile}".tokenize('/').last()
 
-    def ivar_trim_command =
     """
-    # Download the BED file using wget
-    wget $bedfile -O $bedfile_basename
     
+    if [[ ${bedfile} == https://* ]]; then
+        wget -O $bedfile_basename $bedfile
+    elif [[ -f ${bedfile} ]]; then
+        # Local file, no need to download
+        cp ${bedfile} ${bedfile_basename}
+    else
+        echo "Invalid bedfile: ${bedfile}"
+        exit 1
+    fi
+
     ivar trim \\
         $args \\
         -i $bam \\
-        -b $bedfile_basename \\
+        -b ${bedfile_basename} \\
         -p ${prefix} \\
         > ${prefix}.ivar.log
-    """
 
-    """
-    ${ivar_trim_command}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        ivar: \$(echo \$(ivar version 2>&1) | sed 's/^.*iVar version //; s/ .*\$//')
-    END_VERSIONS
-    """
+        cat <<-END_VERSIONS > versions.yml
+        "${task.process}":
+            ivar: \$(echo \$(ivar version 2>&1) | sed 's/^.*iVar version //; s/ .*\$//')
+        END_VERSIONS
+        """
 }
