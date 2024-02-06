@@ -45,21 +45,27 @@ On release, automated continuous integration tests run the pipeline on a full-si
 5. Download the pipeline and test it on a minimal dataset with a single command:
 
     ```console
-    nextflow run main.nf -profile test,<docker/singularity> -c <path_to_custom_config> --outdir results
+    nextflow run main.nf -profile test,<docker/singularity> -c <path_to_custom_config> [optional] --outdir results
     ```
 
     > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
     > * If you are using `singularity` then the pipeline will auto-detect this and attempt to download the Singularity images directly as opposed to performing a conversion from Docker images. If you are persistently observing issues downloading Singularity images directly due to timeout or network issues then please use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, it is highly recommended to use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to pre-download all of the required containers before running the pipeline and to set the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options to be able to store and re-use the images from a central location for future pipeline runs.
     > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
-4. Start running your own analysis!
+6. Start running your own analysis!
 
-    > * SARS-CoV-2 references and minimap indices are already provided in the assets folder
+    > * fasta and gff parameters are defaulted to references in the assets folder of the pipeline. if you want to change the references, please use --fasta and --gff as input parameters
 
     ```console
-    nextflow run main.nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> --input samplesheet.csv --fasta assets/references/wuhan.fa --gff assets/references/wuhan.gff --outdir results
+    nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --outdir results
+    ```
+7. If you have a saved copy of freyja curated lineages and barcodes, please use the following parameters in the command line:
+
+    ```console
+    nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --freyja_barcodes <path_to_barcode_file> --freyja_lineages_meta <path_to_lineage_file> --outdir results
     ```
 
+    > * Note: if you want freyja boot to run faster, please change the default freyja_repeats "1000" to at least "250" bootstraps, this will significantly reduce the time taken to run freyja boot on each sample.
 
 ## Credits
 
@@ -67,7 +73,7 @@ nf-core/aquascope was originally written by Arun Boddapati, Hunter Seabolt, SciC
 
 We thank the following people for their extensive assistance in the development of this pipeline:
 
-Jason Caravas, Shatavia Morrison, Jesse Yoder, Daniel Cornforth ..
+Jason Caravas, Shatavia Morrison, Jesse Yoder, Daniel Cornforth [please add if i missed any]
 
 ## Contributions and Support
 
