@@ -54,7 +54,9 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 6. Start running your own analysis!
 
-    > * fasta and gff parameters are defaulted to references in the assets folder of the pipeline. if you want to change the references, please use --fasta and --gff as input parameters
+    > * fasta, bed and gff parameters are defaulted to references in the assets folder of the pipeline. if you want to change the references, please use --fasta, --bed and --gff as input parameters
+
+    >* Note: Bed file is used for QUALIMAP-BAMQC, GFF in GFF3 format for IVAR VARIANT CALLING. 
 
     ```console
     nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --outdir results
