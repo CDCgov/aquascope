@@ -13,7 +13,7 @@ WorkflowAquascope.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 
-def checkPathParamList = [ params.input, params.fasta, params.freyja_barcodes, params.freyja_lineages_meta]
+def checkPathParamList = [ params.input, params.fasta, params.bed, params.gff, params.freyja_barcodes, params.freyja_lineages_meta]
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -51,6 +51,7 @@ include { FASTQC     as FASTQC_RAW_SHORT        } from '../modules/nf-core/modul
 include { NANOPLOT   as NANOPLOT_RAW_LONG       } from '../modules/nf-core/modules/nf-core/nanoplot/main'
 include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/modules/nf-core/fastp/main'
 include { FASTP      as FASTP_LONG              } from '../modules/local/fastp/main'
+//include { CHOPPER                               } from '../modules/nf-core/modules/nf-core/chopper/main'
 include { FASTQC     as FASTQC_SHORT_TRIMMED    } from '../modules/nf-core/modules/nf-core/fastqc/main'
 include { NANOPLOT   as NANOPLOT_LONG_TRIMMED   } from '../modules/nf-core/modules/nf-core/nanoplot/main'
 include { KRAKEN2_KRAKEN2 as KRAKEN2_STD        } from '../modules/nf-core/modules/nf-core/kraken2/kraken2/main'
@@ -134,7 +135,15 @@ workflow AQUASCOPE {
     FASTP_LONG (
         ch_long_reads, [], false, false
     )
-    ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
+        ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
+
+    //
+    // MODULE: Run Chopper for Long reads
+    //
+    
+    //CHOPPER(
+      //  ch_long_reads
+    //)
     // 
     // MODULE: FastQC for final quality checking
     //
@@ -197,7 +206,7 @@ workflow AQUASCOPE {
 
     QUALIMAP_BAMQC (
                 ch_combined_sort_bam,
-                params.gff
+                params.bed
             )
     ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
     ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
@@ -282,6 +291,7 @@ workflow AQUASCOPE {
     //ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_RAW_LONG.out.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{it[1]}.ifEmpty([]))
+    //ch_multiqc_files = ch_multiqc_files.mix(CHOPPER.out.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{it[1]}.ifEmpty([]))
     //ch_multiqc_files = ch_multiqc_files.mix(NANOPLOT_LONG_TRIMMED.out.collect{it[1]}.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_kraken2_multiqc.collect{it[1]}.ifEmpty([]))
