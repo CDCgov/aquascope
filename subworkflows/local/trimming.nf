@@ -30,7 +30,7 @@ workflow TRIMMING   {
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     emit:
-    bam_orig = IVAR_TRIM.out.bam                    // channel: [ val(meta), bam   ]
+    ivar_bam = IVAR_TRIM.out.bam                    // channel: [ val(meta), bam   ]
     log_out  = IVAR_TRIM.out.log                    // channel: [ val(meta), log   ]
 
     bam      = BAM_SORT_STATS_SAMTOOLS.out.bam      // channel: [ val(meta), [ bam ] ]

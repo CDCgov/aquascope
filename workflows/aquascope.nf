@@ -217,12 +217,14 @@ workflow AQUASCOPE {
 
     ch_ivar_sort_bam = Channel.empty()
     ch_ivar_sort_bai = Channel.empty()
-    
+    ch_ivar_bam      = Channel.empty()
+
     IVAR_TRIMMING_SORTING(
         ch_align_bam
     )
     ch_ivar_sort_bam   = IVAR_TRIMMING_SORTING.out.bam
     ch_ivar_stats      = IVAR_TRIMMING_SORTING.out.stats
+    ch_ivar_bam        = IVAR_TRIMMING_SORTING.out.ivar_bam
     ch_versions        = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
 
 
