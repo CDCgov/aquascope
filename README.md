@@ -52,7 +52,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
     > * If you are using `singularity` then the pipeline will auto-detect this and attempt to download the Singularity images directly as opposed to performing a conversion from Docker images. If you are persistently observing issues downloading Singularity images directly due to timeout or network issues then please use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, it is highly recommended to use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to pre-download all of the required containers before running the pipeline and to set the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options to be able to store and re-use the images from a central location for future pipeline runs.
     > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
 
-6. Start running your own analysis!
+6. Samplesheet definitions
+
+![Samplesheet](https://github.com/CDCgov/aquascope/tree/dev/assets/Samplesheet.png)
+
+7. Start running your own analysis!
 
     > * fasta, bed and gff parameters are defaulted to references in the assets folder of the pipeline. if you want to change the references, please use --fasta, --bed and --gff as input parameters
 
@@ -61,13 +65,11 @@ On release, automated continuous integration tests run the pipeline on a full-si
     ```console
     nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --outdir results
     ```
-7. If you have a saved copy of freyja curated lineages and barcodes, please use the following parameters in the command line:
+8. If you have a saved copy of freyja curated lineages and barcodes, please use the following parameters in the command line:
 
     ```console
     nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --freyja_barcodes <path_to_barcode_file> --freyja_lineages_meta <path_to_lineage_file> --outdir results
     ```
-
-    > * Note: if you want freyja boot to run faster, please change the default freyja_repeats "1000" to at least "250" bootstraps, this will significantly reduce the time taken to run freyja boot on each sample.
 
 ## Credits
 
