@@ -44,7 +44,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 5. Download the pipeline and test it on a minimal dataset with a single command:
 
-    `console
+    `
     nextflow run main.nf -profile test,<docker/singularity> -c <path_to_custom_config> [optional] --outdir results
     `
 
@@ -64,14 +64,14 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
     >* Note: Bed file is used for QUALIMAP-BAMQC, GFF in GFF3 format for IVAR VARIANT CALLING. 
 
-    ```console
+    `
     nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --outdir results
-    ```
+    `
 8. If you have a saved copy of freyja curated lineages and barcodes, please use the following parameters in the command line:
 
-    ```console
+    `
     nextflow run main.nf -profile <docker/singularity> --input samplesheet.csv --freyja_barcodes <path_to_barcode_file> --freyja_lineages_meta <path_to_lineage_file> --outdir results
-    ```
+    `
 
 ## Credits
 
