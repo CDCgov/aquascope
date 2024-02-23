@@ -262,7 +262,7 @@ workflow AQUASCOPE {
     FREYJA_VARIANT_CALLING(
         ch_sorted_mixedbam, 
         ch_genome,
-        params.freyja_repeats,
+       // params.freyja_repeats,
         params.freyja_db_name,
         params.freyja_barcodes,
         params.freyja_lineages_meta
@@ -270,8 +270,8 @@ workflow AQUASCOPE {
     ch_freyja_variants      = FREYJA_VARIANT_CALLING.out.variants
     ch_freyja_depths        = FREYJA_VARIANT_CALLING.out.depths
     ch_freyja_demix         = FREYJA_VARIANT_CALLING.out.demix
-    ch_freyja_lineages      = FREYJA_VARIANT_CALLING.out.lineages
-    ch_freyja_summarized    = FREYJA_VARIANT_CALLING.out.summarized
+    //ch_freyja_lineages      = FREYJA_VARIANT_CALLING.out.lineages
+   // ch_freyja_summarized    = FREYJA_VARIANT_CALLING.out.summarized
     ch_versions             = ch_versions.mix(FREYJA_VARIANT_CALLING.out.versions)
 
 /*     // MODULE: Pipeline reporting
