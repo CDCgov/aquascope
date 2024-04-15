@@ -35,7 +35,7 @@ process MINIMAP2_ALIGN {
     if (platform == 'illumina' || platform == 'iontorrent') {
         minimap2_args = "-x sr"
     } else if (platform == 'nanopore') {
-        minimap2_args = "-x map-ont"
+        minimap2_args = "-x map-ont --secondary=no --sam-hit-only"
     } else if (platform == 'pacbio') {
         minimap2_args = "-x map-hifi" //Continuous reads shorter than 20kb
     } else {
