@@ -13,7 +13,7 @@ WorkflowAquascope.initialise(params, log)
 // TODO nf-core: Add all file path parameters for the pipeline to the list below
 // Check input path parameters to see if they exist
 
-def checkPathParamList = [ params.input, params.fasta, params.bed, params.gff, params.freyja_barcodes, params.freyja_lineages_meta]
+def checkPathParamList = [ params.input, params.fasta, params.gff, params.freyja_barcodes, params.freyja_lineages_meta]
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
@@ -83,6 +83,7 @@ workflow AQUASCOPE {
 
     // Initialize channels with known values
     ch_genome = params.fasta ? Channel.value(file(params.fasta)) : Channel.empty()
+    ch_gff    = params.gff ? Channel.value(file(params.gff)) : Channel.empty()
 
     // Initialize channels for other data
     ch_versions = Channel.empty()
@@ -179,7 +180,7 @@ workflow AQUASCOPE {
     // MODULE : QUALIMAP for post-alignment BAM QC
     QUALIMAP_BAMQC (
         ch_combined_bam,
-        params.bed
+        ch_gff
     )
     ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
     ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
@@ -213,7 +214,7 @@ workflow AQUASCOPE {
         ch_sorted_bam, 
         ch_genome, // Assuming the reference and this are the same 
         ch_genome_fai,
-        params.gff, 
+        ch_gff, 
         params.save_mpileup // default is false, change it to true in nextflow.config file
     )
     ch_ivar_vcf = IVAR_VARIANTS.out.tsv
