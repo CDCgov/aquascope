@@ -6,7 +6,7 @@ include { IVAR_TRIM                             } from '../../modules/nf-core/mo
 include { BAM_SORT_STATS_SAMTOOLS               } from './bam_sort_stats_samtools/main'
 
 
-params.fasta    = params.fasta ? Channel.value(file( "${params.fasta}")) : Channel.empty()
+ch_genome = params.fasta ? Channel.value(file(params.fasta)) : Channel.empty()
 
 workflow TRIMMING   {
 
@@ -25,7 +25,7 @@ workflow TRIMMING   {
 
     BAM_SORT_STATS_SAMTOOLS (
     IVAR_TRIM.out.bam,
-    params.fasta
+    ch_genome
     )
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
