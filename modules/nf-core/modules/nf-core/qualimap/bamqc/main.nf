@@ -24,7 +24,7 @@ process QUALIMAP_BAMQC {
 
     def collect_pairs = meta.single_end ? '' : '--collect-overlap-pairs'
     //def memory = (task.memory.mega*0.8).intValue() + 'M'
-    def regions = gff ? "--gff $gff" : ''
+    def regions = gff ? "--feature-file $gff" : ''
 
     def strandedness = 'non-strand-specific'
     if (meta.strandedness == 'forward') {
