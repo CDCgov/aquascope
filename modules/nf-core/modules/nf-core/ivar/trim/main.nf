@@ -24,14 +24,6 @@ process IVAR_TRIM {
     def platform = "${meta.platform}"
     def bedfile = "${meta.bedfile}"
     def bedfile_basename = "${bedfile}".tokenize('/').last()
-    def args2 = ""
-    
-    // Check sequencing platform and set custom parameters accordingly
-    if (platform == 'nanopore') {
-        args2 = "-e -q 15 -s 4"
-    } else if (platform == 'illumina' || platform == 'iontorrent') {
-        args2 = "-q 20"
-    }
 
     """
     
@@ -47,7 +39,6 @@ process IVAR_TRIM {
 
     ivar trim \\
         $args \\
-        $args2 \\
         -i $bam \\
         -b ${bedfile_basename} \\
         -p ${prefix} \\

@@ -187,10 +187,12 @@ workflow AQUASCOPE {
 
     // MODULE: RUN IVAR_TRIM_SORT - Illumina only
     ch_ivar_sort_bam = Channel.empty()
+    ch_ivar_sort_log = Channel.empty()
     IVAR_TRIMMING_SORTING(
         ch_short_align_bam
     )
     ch_ivar_sort_bam = IVAR_TRIMMING_SORTING.out.bam
+    ch_ivar_sort_log = IVAR_TRIMMING_SORTING.out.log_out
     ch_ivar_stats = IVAR_TRIMMING_SORTING.out.stats
     ch_ivar_bam = IVAR_TRIMMING_SORTING.out.ivar_bam
     ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
