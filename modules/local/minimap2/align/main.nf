@@ -11,9 +11,9 @@ process MINIMAP2_ALIGN {
     input:
     tuple val(meta), path(reads)
     path reference
-    val bam_format // change it to samoutput
+    val bam_format 
     val cigar_paf_format
-    val cigar_bam // change this to sam output
+    val cigar_bam 
 
     output:
     tuple val(meta), path("*.paf"), optional: true, emit: paf
@@ -35,7 +35,7 @@ process MINIMAP2_ALIGN {
     if (platform == 'illumina' || platform == 'iontorrent') {
         minimap2_args = "-x sr"
     } else if (platform == 'nanopore') {
-        minimap2_args = "-x map-ont"
+        minimap2_args = "-x map-ont --secondary=no --sam-hit-only"
     } else if (platform == 'pacbio') {
         minimap2_args = "-x map-hifi" //Continuous reads shorter than 20kb
     } else {
