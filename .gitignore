@@ -10,3 +10,6 @@ testing*
 .vscode/
 .git/
 .github/
+
+# mkdocs
+site/
