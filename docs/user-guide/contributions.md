@@ -1,0 +1,3 @@
+`Aquascope` was largely developed by [OAMD's](https://www.cdc.gov/amd/index.html) SciComp: 
+
+- Boddapati, A. [HANLDE], Hunter, S. [HANDLE], others...
