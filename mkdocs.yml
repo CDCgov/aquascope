@@ -1,0 +1,103 @@
+# Project Information
+site_name: Aquascope
+site_author: SciComp
+site_description: >-
+  Aquascope
+# Repository
+repo_name: CDCgov/Aquascope
+repo_url: https://github.com/CDCgov/Aquascope
+edit_uri: https://github.com/CDCgov/Aquascope/edit/main/docs/
+
+# Copyright
+copyright: Copyright &copy; 2024 CDC SciComp
+
+# Configuration
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.top
+    - navigation.indexes
+    - toc.integrate 
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+    - scheme: slate
+      primary: red
+      accent: red
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+# Plugins
+plugins:
+  - search
+  - git-revision-date
+  - minify:
+      minify_html: true
+
+
+# Customization
+extra:
+  social:
+    - icon: fontawesome/solid/users
+      link: https://www.cdc.gov/amd/index.html
+    - icon: fontawesome/brands/github
+      link: https://github.com/CDCgov
+  version:
+    provider: mike
+
+
+# Extensions
+markdown_extensions:
+  - markdown.extensions.admonition
+  - markdown.extensions.attr_list
+  - markdown.extensions.md_in_html
+  - markdown.extensions.def_list
+  - markdown.extensions.footnotes
+  - markdown.extensions.meta
+  - markdown.extensions.toc:
+      permalink: true
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets:
+      check_paths: true
+  - pymdownx.superfences
+  - pymdownx.tabbed
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+# Page Tree
+nav:
+  - Background : index.md
+  - Usage: 
+    - 1. Getting Started : user-guide/getting-started.md
+    - 2. Preparing Files: user-guide/preparing-files.md
+    - 3. Running the Pipeline: user-guide/run.md
+    - 4. Expected Output: user-guide/output.md
+    - 5. Running Test Data: user-guide/test-info.md
+  - FAQ:
+    - Troubleshooting: user-guide/troubleshooting.md
+    - Contributions: user-guide/contributions.md

@@ -2,10 +2,10 @@ process FREYJA_DEMIX {
     tag "$meta.id"
     label 'process_low'
 
-    conda "bioconda::freyja=1.4.4"
+    conda "bioconda::freyja=1.4.9"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/freyja:1.4.4--pyhdfd78af_0':
-        'quay.io/biocontainers/freyja:1.4.4--pyhdfd78af_0' }"
+        'https://depot.galaxyproject.org/singularity/freyja:1.4.9--pyhdfd78af_0':
+        'quay.io/biocontainers/freyja:1.4.9--pyhdfd78af_0' }"
         
     input:
     tuple val(meta), path(variants)

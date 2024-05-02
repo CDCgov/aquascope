@@ -7,3 +7,9 @@ testing/
 testing*
 *.pyc
 .gitignore
+.vscode/
+.git/
+.github/
+
+# mkdocs
+site/
