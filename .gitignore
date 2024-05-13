@@ -12,5 +12,6 @@ testing*
 .git/
 .github/
 test-profile.frey1.5.0.sh
+test_freyja1.5.sh
 # mkdocs
 site/
