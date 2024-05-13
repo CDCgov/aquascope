@@ -11,8 +11,12 @@ testing*
 .vscode/
 .git/
 .github/
-test-profile.frey1.5.0.sh
-test_freyja1.5.sh
+<<<<<<< HEAD
 test-51324
+=======
+assets/samplesheet_ontaatesting.csv
+ont_fastq/
+
+>>>>>>> origin/feature/aa_#27
 # mkdocs
 site/
