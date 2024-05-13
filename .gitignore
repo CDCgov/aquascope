@@ -11,6 +11,6 @@ testing*
 .vscode/
 .git/
 .github/
-
+test-profile.frey1.5.0.sh
 # mkdocs
 site/
