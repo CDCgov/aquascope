@@ -1,6 +1,7 @@
 .nextflow*
 work/
 data/
+ont_fastq/
 results/
 .DS_Store
 testing/
