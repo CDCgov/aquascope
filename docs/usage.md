@@ -1,12 +1,12 @@
-# nf-core/aquascope: Usage
+# CDCgov/aquascope: Usage
 
-## :warning: Please read this documentation on the nf-core website: [https://nf-co.re/aquascope/usage](https://nf-co.re/aquascope/usage)
+## :warning: Please read this documentation: [Aquascope-User-Guide](https://cdcgov.github.io/aquascope/)
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+<!-- TODO CDCaquascope : Custom Configuration has to be edited as of 05/14/24  -->
 
 ## Samplesheet input
 
@@ -45,7 +45,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 The typical command for running the pipeline is as follows:
 
 ```console
-nextflow run nf-core/aquascope --input samplesheet.csv -profile singularity
+nextflow run CDCgov/aquascope --input samplesheet.csv -profile singularity
 ```
 
 This will launch the pipeline with the `singularity` configuration profile. See below for more information about profiles.
