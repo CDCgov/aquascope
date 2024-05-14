@@ -115,7 +115,7 @@ This folder contains BAM file statistics and reference indexing.
 [Samtools](http://www.htslib.org/) Samtools is a suite of programs for interacting with high-throughput sequencing data.
 
 
-## [PRIMER_TRIMMING](AmpliconClip and iVar Trim)
+## [PRIMERTRIMMING](#AmpliconClip and iVar Trimming)
 This folder contains reads with trimmed primers using `samtools ampliconclip` for ONT data and `ivar trim` for Illumina data.
 - **Input**: Aligned BAM files.
 - **Output**: BAM files with primers trimmed.
@@ -135,7 +135,7 @@ This folder contains reads with trimmed primers using `samtools ampliconclip` fo
 
 [AmpliconClip](http://www.htslib.org/doc/samtools-ampliconclip.html) Clips the ends of read alignments if they intersect with regions defined in a BED file. While this tool was originally written for clipping read alignment positions which correspond to amplicon primer locations it can also be used in other contexts. 
 
-## [Variant_Calling](ivar Variant calling and Freyja)
+## [VariantCalling](#ivar Variant calling and Freyja Variant calling)
 This folder contains variant calling and demixing results using Freyja.
 - **Input**: Primer trimmed BAM files.
 - **Output**: Variant calls and demixed sequences.
