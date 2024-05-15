@@ -1,6 +1,7 @@
 .nextflow*
 work/
 data/
+ont_fastq/
 results/
 .DS_Store
 testing/
@@ -10,6 +11,12 @@ testing*
 .vscode/
 .git/
 .github/
+<<<<<<< HEAD
+test-51324
+=======
+assets/samplesheet_ontaatesting.csv
+ont_fastq/
 
+>>>>>>> origin/feature/aa_#27
 # mkdocs
 site/
