@@ -1,13 +1,64 @@
-## Run the pipeline
+# Run the pipeline
 
-5. Run the pipeline profile
+## Input Requirements
+To run the pipeline, the following inputs may be given at run-time:
+- profile (required)
+- samplesheet
+- references file (optional)
+- Freyja-specific files (optional)
+
+## Profile (Required)
+Select from any of the profiles:
+- docker
+- singularity
+- podman
+- shifter
+- charliecloud
+- conda
+- instutitute_specific_profiles
+
     ```
-    nextflow run main.nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+    nextflow run main.nf \
+    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+    --input samplesheet.csv \
+    --outdir results
     ```
-	<!--TODO ARUN: do we actually have test samples? What is the scope of test-->
-    A. The `-profile test` will run the test parameters and samples
-   
-	<!--TODO ARUN: Not sure if we're using singularity at all? if not, delete -->
-    > * Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
-    > * If you are using `singularity` then the pipeline will auto-detect this and attempt to download the Singularity images directly as opposed to performing a conversion from Docker images. If you are persistently observing issues downloading Singularity images directly due to timeout or network issues then please use the `--singularity_pull_docker_container` parameter to pull and convert the Docker image instead. Alternatively, it is highly recommended to use the [`nf-core download`](https://nf-co.re/tools/#downloading-pipelines-for-offline-use) command to pre-download all of the required containers before running the pipeline and to set the [`NXF_SINGULARITY_CACHEDIR` or `singularity.cacheDir`](https://www.nextflow.io/docs/latest/singularity.html?#singularity-docker-hub) Nextflow options to be able to store and re-use the images from a central location for future pipeline runs.
-    > * If you are using `conda`, it is highly recommended to use the [`NXF_CONDA_CACHEDIR` or `conda.cacheDir`](https://www.nextflow.io/docs/latest/conda.html) settings to store the environments in a central location for future pipeline runs.
+
+These profiles can be combined together
+
+    ```
+    nextflow run main \
+    -profile docker,rosalind_uge \
+    --input samplesheet.csv \
+    --outdir results
+    ```
+
+## Samplesheet (Required)
+Refer to the `Preparing Files` documentaiton for specific samplesheet-related instructions.
+
+## References (Optional)
+Fasta, bed and gff parameters are defaulted to references in the assets folder of the pipeline. To change, the `--fasta`, `--gff` and `--gff3` are available as input parameters.
+    
+- Bed file is used for QUALIMAP-BAMQC, GFF in GFF3 format for FREYJA variant calling 
+
+- Docker isn't supported on CDC (Rosalind) infrastructure.
+
+    ```
+    nextflow run main.nf \
+    -profile <docker/singularity> \
+    --input samplesheet.csv \
+    --outdir results \
+    --fasta /path/to/fasta/
+    ```
+
+## Freyja Curated Lineages / Barcodes
+Users can supply saved freyja-curated lineages and barcodes:
+
+```
+nextflow run main.nf \
+    -profile <docker/singularity> \
+    --input samplesheet.csv \
+    --freyja_barcodes <path_to_barcode_file> \
+    --freyja_lineages_meta <path_to_lineage_file> \
+    --outdir results
+    ```
