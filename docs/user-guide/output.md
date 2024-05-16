@@ -6,13 +6,8 @@ This document describes the output produced by the pipeline. Most of the plots a
 
 The directories listed below will be created in the results directory after the pipeline has finished. All paths are relative to the top-level results directory.
 
-## Pipeline overview
-
-The pipeline is built using [Nextflow](https://www.nextflow.io/) and processes data using the following steps:
-
 ## [FASTQC](#fastqc)
 This folder contains FastQC reports for ILLUMINA data, both pre and post trimming. `Raw_Reads` and `Trimmed_Reads` are the output directories.
-- **Input**: Raw and Trimmed short-read data.
 - **Output**: Quality metrics for raw and trimmed short-read data.
 
 <details markdown="1">
@@ -24,11 +19,8 @@ This folder contains FastQC reports for ILLUMINA data, both pre and post trimmin
 
 </details>
 
-[FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
-
 ## [NANOPLOT](#nanoplot)
 This folder contains NanoPlot reports for ONT data, both pre and post trimming. `Raw_Reads` and `Trimmed_Reads` are the output directories.
-- **Input**: Raw and Trimmed long-read data.
 - **Output**: Quality metrics for long-read data.
 
 <details markdown="2">
@@ -43,12 +35,8 @@ This folder contains NanoPlot reports for ONT data, both pre and post trimming. 
 
 </details>
 
-[NanoPlot](https://github.com/wdecoster/NanoPlot) gives general quality metrics about your sequenced reads. its a Plotting tool for long read sequencing data and alignments.
-
-
 ## [FASTP](#fastp)
 This folder contains trimmed reads from both short and long reads.
-- **Input**: Trimmed reads from short and long-reads.
 - **Output**: Adapter trimmed reads for both long and short-read data.
 
 <details markdown="3">
@@ -61,12 +49,8 @@ This folder contains trimmed reads from both short and long reads.
 
 </details>
 
-[Fastp](https://github.com/OpenGene/fastp) A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
-
-
 ## [Qualimap/BAMQC](#qualimap-bamqc)
 This folder contains BAMQC reports for aligned reads. It includes quality metrics and coverage statistics for BAM files.
-- **Input**: BAM files from alignment step.
 - **Output**: Quality metrics and coverage statistics reports.
 
 <details markdown="4">
@@ -79,12 +63,8 @@ This folder contains BAMQC reports for aligned reads. It includes quality metric
 
 </details>
 
-[Qualimap](http://qualimap.conesalab.org/) Qualimap examines sequencing alignment data in SAM/BAM files according to the features of the mapped reads and provides an overall view of the data that helps to the detect biases in the sequencing and/or mapping of the data and eases decision-making for further analysis.
-
-
 ## [ALIGNMENT/MINIMAP2](#alignment-minimap2)
 This folder contains alignment files generated using Minimap2.
-- **Input**: Trimmed reads from FASTP step.
 - **Output**: Aligned reads in BAM format.
 
 <details markdown="5">
@@ -95,11 +75,8 @@ This folder contains alignment files generated using Minimap2.
 
 </details>
 
-[Minimap2](https://github.com/lh3/minimap2) Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against a large reference database. Typical use cases include: (1) mapping PacBio or Oxford Nanopore genomic reads to the human genome; (2) finding overlaps between long reads with error rate up to ~15%; (3) splice-aware alignment of PacBio Iso-Seq or Nanopore cDNA or Direct RNA reads against a reference genome; (4) aligning Illumina single- or paired-end reads; (5) assembly-to-assembly alignment; (6) full-genome alignment between two closely related species with divergence below ~15%.
-
 ## [SAMTOOLS](#samtools)
 This folder contains BAM file statistics and reference indexing.
-- **Input**: BAM file from the ALIGNMENT step.
 - **Output**: Statistics on each BAM file and a reference index.
 
 <details markdown="6">
@@ -112,12 +89,9 @@ This folder contains BAM file statistics and reference indexing.
 
 </details>
 
-[Samtools](http://www.htslib.org/) Samtools is a suite of programs for interacting with high-throughput sequencing data.
 
-
-## [PRIMERTRIMMING](#AmpliconClip and iVar Trimming)
+## [PRIMERTRIMMING](#AmpliconClip_and_iVar_Trimming)
 This folder contains reads with trimmed primers using `samtools ampliconclip` for ONT data and `ivar trim` for Illumina data.
-- **Input**: Aligned BAM files.
 - **Output**: BAM files with primers trimmed.
 
 <details markdown="7">
@@ -131,13 +105,8 @@ This folder contains reads with trimmed primers using `samtools ampliconclip` fo
 
 </details>
 
-[ivarTrim](https://andersen-lab.github.io/ivar/html/manualpage.html) iVar uses primer positions supplied in a BED file to soft clip primer sequences from an aligned and sorted BAM file. Following this, the reads are trimmed based on a quality threshold(Default: 20)
-
-[AmpliconClip](http://www.htslib.org/doc/samtools-ampliconclip.html) Clips the ends of read alignments if they intersect with regions defined in a BED file. While this tool was originally written for clipping read alignment positions which correspond to amplicon primer locations it can also be used in other contexts. 
-
-## [VariantCalling](#ivar Variant calling and Freyja Variant calling)
+## [VariantCalling](#ivar_and_freyja_variant_calling)
 This folder contains variant calling and demixing results using Freyja.
-- **Input**: Primer trimmed BAM files.
 - **Output**: Variant calls and demixed sequences.
 
 <details markdown="8">
@@ -156,11 +125,9 @@ This folder contains variant calling and demixing results using Freyja.
 
 </details>
 
-[ivarVariantCalling](https://andersen-lab.github.io/ivar/html/manualpage.html) iVar uses the output of the samtools mpileup command to call variants - single nucleotide variants(SNVs) and indels.
-
-[Freyja](https://github.com/andersen-lab/Freyja) Perform variant calling using samtools and iVar on a BAMFILE and generates relative lineage abundances from VARIANTS and DEPTHS.
-
-## [MultiQC](#multiqc) - Aggregate report describing results and QC from the whole pipeline
+## [MultiQC](#multiqc)
+This folder contains an aggregated report describing quality control results from the pipeline.
+- **Output**: MultQC report.
 
 <details markdown="9">
 <summary>Output files</summary>
@@ -172,12 +139,9 @@ This folder contains variant calling and demixing results using Freyja.
 
 </details>
 
-[MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
-
-Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
-
-## [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
-
+## [Execution Reports](#pipeline-information) 
+This folder contains report metrics generated during the workflow execution.
+- **Output**: Execution based reports.
 
 <details markdown="10">
 <summary>Output files</summary>
@@ -188,5 +152,3 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
     * Reformatted samplesheet files used as input to the pipeline: `samplesheet.valid.csv`.
 
 </details>
-
-[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
