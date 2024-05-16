@@ -2,8 +2,11 @@ name: mkdocs_build_deploy
 on:
   workflow_dispatch:
   push:
-    paths:
-      - 'docs/**'
+   branches:
+    -main
+    -dev
+   paths:
+     - 'docs/**'
 
 jobs:
   build:
