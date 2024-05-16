@@ -22,7 +22,7 @@ SAMPLE1_SE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/vira
 
 B. Currently, Illumina, Ion-torrent and Oxford Nanopore platforms are supported in this pipeline.
 
-D. `Keywords`: lr - Longreads, bam_file - Only for Ion-torrent platform, platform - sequencing platform.
+C. `Keywords`: lr - Longreads, bam_file - Only for Ion-torrent platform, platform - sequencing platform.
 
 ## Prepare the config files
 Prepare the configuration files
