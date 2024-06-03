@@ -169,7 +169,7 @@ workflow AQUASCOPE {
     // Reheader and Sort the INPUT BAM from Ion-Torrent
     ch_rehead_sorted_bam = Channel.empty()   
     REHEADER_BAM (
-        ch_raw_bam
+        ch_raw_bam, ch_gff
     )
     ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
     ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)

@@ -1,20 +1,21 @@
 #!/bin/bash
 
 bam=$1
+gff=$2
 
-# Check if BAM file is sorted
-bamheader=$(samtools view -H $bam)
+echo "BAM file must be sorted, sorting now"
+# Sort the unsorted BAM file
+samtools sort -o "${bam}_sorted.bam" -T "${bam}_temp" "$bam"
 
-if grep -q "SO:coordinate" <<< ${bamheader}; then
-    echo "BAM file is already sorted"
-    # Reheader the sorted BAM file
-    samtools view -H "$bam" | awk -v OFS='\t' '{ if ($1 == "@SQ" && $2 == "SN:2019-nCoV") $2 = "SN:MN908947.3"; print }' | samtools reheader -P - $bam > "${bam}_reheadered.bam"
-else
-    echo "BAM file is not sorted, sorting now"
-    # Sort the unsorted BAM file
-    samtools sort -o "${bam}_sorted.bam" -T "${bam}_temp" "$bam"
-    # Reheader the sorted BAM file
-    samtools view -H "${bam}_sorted.bam" | awk -v OFS='\t' '{ if ($1 == "@SQ" && $2 == "SN:2019-nCoV") $2 = "SN:MN908947.3"; print }' | samtools reheader -P - $bam > "${bam}_reheadered.bam"
+# Extract SNID from GFF
+SNID=$(awk 'NR>5 {print $1; exit}' "$gff")
+
+# Reheader the BAM file
+samtools view -H "$bam" | awk -v OFS='\t' -v SNID="$SNID" '{ if ($1 == "@SQ" && $2 == "SN:2019-nCoV") $2 = "SN:"SNID; print }' | samtools reheader -P - "$bam" > "${bam%_sorted.bam}_reheadered.bam"
+
+
+# Clean up temporary files
+if [ -f "${bam}_sorted.bam" ]; then
     rm "${bam}_sorted.bam"
 fi
 
