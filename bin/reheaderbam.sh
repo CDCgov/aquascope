@@ -11,7 +11,7 @@ samtools sort -o "${bam}_sorted.bam" -T "${bam}_temp" "$bam"
 SNID=$(awk 'NR>5 {print $1; exit}' "$gff")
 
 # Reheader the BAM file
-samtools view -H "$bam" | awk -v OFS='\t' -v SNID="$SNID" '{ if ($1 == "@SQ" && $2 == "SN:2019-nCoV") $2 = "SN:"SNID; print }' | samtools reheader -P - "$bam" > "${bam%_sorted.bam}_reheadered.bam"
+samtools view -H "$bam" | awk -v OFS='\t' -v SNID="$SNID" '{ if ($1 == "@SQ" && sub(/^SN:.*/, "SN:"SNID, $2)) print }' | samtools reheader -P - "$bam" > "${bam%_sorted.bam}_reheadered.bam"
 
 
 # Clean up temporary files
