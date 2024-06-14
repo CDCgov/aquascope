@@ -52,10 +52,8 @@ include { FASTQC     as FASTQC_RAW_SHORT        } from '../modules/nf-core/modul
 include { NANOPLOT   as NANOPLOT_RAW_LONG       } from '../modules/nf-core/modules/nf-core/nanoplot/main'
 include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/modules/nf-core/fastp/main'
 include { FASTP      as FASTP_LONG              } from '../modules/local/fastp/main'
-//include { CHOPPER                               } from '../modules/nf-core/modules/nf-core/chopper/main'
 include { FASTQC     as FASTQC_SHORT_TRIMMED    } from '../modules/nf-core/modules/nf-core/fastqc/main'
 include { NANOPLOT   as NANOPLOT_LONG_TRIMMED   } from '../modules/nf-core/modules/nf-core/nanoplot/main'
-include { KRAKEN2_KRAKEN2 as KRAKEN2_STD        } from '../modules/nf-core/modules/nf-core/kraken2/kraken2/main'
 include { QUALIMAP_BAMQC                        } from '../modules/nf-core/modules/nf-core/qualimap/bamqc/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SHORT} from '../modules/local/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_LONG } from '../modules/local/minimap2/align/main'
@@ -138,18 +136,6 @@ workflow AQUASCOPE {
         ch_trimmed_reads_long
     )
 
-    // KRAKEN2 to check for human and bacterial reads
-    ch_kraken2_multiqc = Channel.empty()
-    if (params.kraken != false) {
-        KRAKEN2_STD (
-            ch_trimmed_reads_short,
-            params.kraken_db_std,
-            true,
-            true
-        )
-        ch_kraken2_multiqc = KRAKEN2_STD.out.report
-    }
-
     // MODULE: Align reads against reference genome
     ch_short_align_bam = Channel.empty()
     MINIMAP2_ALIGN_SHORT (
@@ -167,11 +153,13 @@ workflow AQUASCOPE {
     ch_long_align_bai = MINIMAP2_ALIGN_LONG.out.bai
 
     // Reheader and Sort the INPUT BAM from Ion-Torrent
-    ch_rehead_sorted_bam = Channel.empty()   
+    ch_rehead_sorted_bam = Channel.empty()
+    ch_rehead_sorted_bai = Channel.empty()
     REHEADER_BAM (
         ch_raw_bam, ch_gff
     )
     ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
+    ch_rehead_sorted_bai = REHEADER_BAM.out.reheadered_bai
     ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
 
     // Combine channels for further processing
@@ -253,7 +241,6 @@ workflow AQUASCOPE {
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{ it[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{ it[1] }.ifEmpty([]))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_kraken2_multiqc.collect{ it[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{ it[1] }.ifEmpty([]))
     ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
