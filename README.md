@@ -1,14 +1,27 @@
-# Aquascope
+<p align="center">
+  <img src="https://github.com/CDCgov/aquascope/assets/20726305/62d44e22-a870-4a28-9d9d-d21b6e3c4ca0" alt="Aquascope_V2_50">
+</p>
 
-[![Nextflow](https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.04.0-23aa62.svg?labelColor=000000)](https://www.nextflow.io/)
-[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
-[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
-[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
-
-## This project is a successor to the [C-WAP pipeline](https://github.com/CFSAN-Biostatistics/C-WAP) and is intended to process SARS-CoV-2 wastewater samples to determine relative variant abundance.  
+<h1 align="center">Aquascope</h1>
+<div align="center">
+  <a href="https://www.nextflow.io/">
+    <img src="https://img.shields.io/badge/nextflow%20DSL2-%E2%89%A521.04.0-23aa62.svg?labelColor=000000" alt="Nextflow">
+  </a>
+  <a href="https://docs.conda.io/en/latest/">
+    <img src="http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda" alt="run with conda">
+  </a>
+  <a href="https://www.docker.com/">
+    <img src="https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker" alt="run with docker">
+  </a>
+  <a href="https://sylabs.io/docs/">
+    <img src="https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000" alt="run with singularity">
+  </a>
+</div>
 
 ## Introduction
 **CDCgov/aquascope** is a bioinformatics best-practice pipeline for early detection of SARS-COV variants of concern, sequenced throughshotgun metagenomic sequencing, from wastewater.
+
+This project is a successor to the [C-WAP pipeline](https://github.com/CFSAN-Biostatistics/C-WAP) and is intended to process SARS-CoV-2 wastewater samples to determine relative variant abundance.  
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. 
 

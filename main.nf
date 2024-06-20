@@ -13,6 +13,7 @@ nextflow.enable.dsl = 2
 ========================================================================================
 */
 
+// Initialises the workflow and validates parameters
 WorkflowMain.initialise(workflow, params, log)
 
 /*
@@ -21,27 +22,38 @@ WorkflowMain.initialise(workflow, params, log)
 ========================================================================================
 */
 
-include { AQUASCOPE } from './workflows/aquascope'
+// Include the workflows from their respective files
+include { AQUASCOPE         } from './workflows/aquascope'
+include { FREYJA_STANDALONE } from './workflows/freyja_standalone'
 
 //
 // WORKFLOW: Run main nf-core/aquascope analysis pipeline
 //
 workflow NFCORE_AQUASCOPE {
-    AQUASCOPE ()
+    AQUASCOPE()
+}
+
+//
+// WORKFLOW: Run Freyja standalone analysis
+//
+workflow NFCORE_FREYJA_STANDALONE {
+    FREYJA_STANDALONE()
 }
 
 /*
 ========================================================================================
-    RUN ALL WORKFLOWS
+    RUN THE SELECTED WORKFLOW
 ========================================================================================
 */
 
-//
-// WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
-//
 workflow {
-    NFCORE_AQUASCOPE ()
+    if (params.workflow == 'aquascope') {
+        NFCORE_AQUASCOPE()
+    } else if (params.workflow == 'freyja_standalone') {
+        NFCORE_FREYJA_STANDALONE()
+    } else {
+        error "Unknown workflow specified: ${params.workflow}. Valid options are 'aquascope' or 'freyja_standalone'."
+    }
 }
 
 /*

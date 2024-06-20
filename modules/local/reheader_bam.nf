@@ -18,6 +18,7 @@ process REHEADER_BAM {
     // Output file (sorted BAM)
     output:
     tuple val(meta), path("*.bam"),   emit: reheadered_bam
+    tuple val(meta), path("*.bai"),   emit: reheadered_bai
     path  "versions.yml",            emit: versions
 
     // Script to run within the container
