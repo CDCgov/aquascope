@@ -1,22 +1,17 @@
+#nextflow details
 .nextflow*
 work/
+
+# temp data
 data/
 ont_fastq/
 results/
-.DS_Store
 testing/
-testing*
-*.pyc
-.gitignore
-.vscode/
-.git/
-.github/
-<<<<<<< HEAD
-test-51324
-=======
-assets/samplesheet_ontaatesting.csv
-ont_fastq/
 
->>>>>>> origin/feature/aa_#27
+# background
+.DS_Store
+*.pyc
+.vscode/
+
 # mkdocs
 site/
