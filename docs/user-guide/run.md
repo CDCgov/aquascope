@@ -28,7 +28,7 @@ These profiles can be combined together
 
     ```
     nextflow run main \
-    -profile docker,rosalind_uge \
+    -profile docker,rosalind \
     --input samplesheet.csv \
     --outdir results
     ```
