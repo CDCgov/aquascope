@@ -12,18 +12,23 @@ Review the information on the [Getting Started](https://github.com/CDCgov/aquasc
 
 
 ## Submit the test data
-Test [samplesheet] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet.csv) is included in the .assets/ directory
+Two test samplesheets are available, depending on the input data type: [ONT] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet_test_ont.csv) and [ILLUMINA] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet_test_illumina.csv)
 
 A. Submit Pipeline [Internal-CDC-Users]
 ```
+# ONT data
 nextflow run main.nf \
--profile test,singularity,rosalind \
+-profile test_ont,singularity \
+-c <custom-path-to-rosalind-config>
+
+nextflow run main.nf \
+-profile test_illumina,singularity \
 -c <custom-path-to-rosalind-config>
 ```
 
 B. Submit Pipeline [External-Users]
 ```
 nextflow run main.nf \
--profile test,<docker/singularity/conda> \
+-profile test_ont,<docker/singularity/conda> \
 -c <SGE/PBS/SLURM/CLOUD config>
 ```
