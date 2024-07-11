@@ -33,7 +33,11 @@ def validate_bedfile(bedfile, line, platform):
             conn.request("GET", parsed_url.path)
             response = conn.getresponse()
             if response.status == 200:
+                print(f"Downloading BED file from '{bedfile}'")
                 lines = response.read().decode('utf-8').splitlines()
+                print("First 4 rows of the BED file:")
+                for i, bed_line in enumerate(lines[:4]):
+                    print(f"Row {i+1}: {bed_line}")
                 for i, bed_line in enumerate(lines):
                     cols = bed_line.strip().split("\t")
                     if len(cols) < 6:
@@ -45,7 +49,12 @@ def validate_bedfile(bedfile, line, platform):
                 print(f"Bed file '{bedfile}' does not exist! Line: {line}")
             else:
                 with open(bedfile, "r") as f:
-                    for i, bed_line in enumerate(f):
+                    print(f"Reading BED file from '{bedfile}'")
+                    lines = f.readlines()
+                    print("First 4 rows of the BED file:")
+                    for i, bed_line in enumerate(lines[:4]):
+                        print(f"Row {i+1}: {bed_line.strip()}")
+                    for i, bed_line in enumerate(lines):
                         cols = bed_line.strip().split("\t")
                         if len(cols) < 6:
                             print(f"Bed file '{bedfile}' must have at least 6 columns! (Line {i+1}) Line: {line}")
@@ -87,7 +96,6 @@ def check_samplesheet(args):
                 print(f"IonTorrent requires BAM file! Line: {line}")
 
             validate_bedfile(bedfile, line, platform)
-
             # Write to the output file
             output_line = ",".join([sample, platform, fastq_1 or '', fastq_2 or '', lr or '', bam_file or '', bedfile or ''])
             fout.write(output_line + "\n")
