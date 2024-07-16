@@ -18,17 +18,14 @@ A. Submit Pipeline [Internal-CDC-Users]
 ```
 # ONT data
 nextflow run main.nf \
--profile test_ont,singularity \
--c <custom-path-to-rosalind-config>
+-profile test_ont,singularity,rosalind
 
 nextflow run main.nf \
--profile test_illumina,singularity \
--c <custom-path-to-rosalind-config>
+-profile test_illumina,singularity,rosalind
 ```
 
 B. Submit Pipeline [External-Users]
 ```
 nextflow run main.nf \
--profile test_ont,<docker/singularity/conda> \
--c <SGE/PBS/SLURM/CLOUD config>
+-profile test_ont,singularity,rosalind
 ```
