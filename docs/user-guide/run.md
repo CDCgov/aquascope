@@ -73,5 +73,5 @@ nextflow run main.nf \
     --input bam_samplesheet.csv \
     --freyja_barcodes <path_to_barcode_file> \
     --freyja_lineages_meta <path_to_lineage_file> \
-    --outdir results
+    --outdir freyj_standalone_results
 ```
