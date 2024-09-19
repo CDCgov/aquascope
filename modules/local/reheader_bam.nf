@@ -13,16 +13,18 @@ process REHEADER_BAM {
     // Input parameter
     input:
     tuple val(meta),path(bam)
+    path(gff)
 
     // Output file (sorted BAM)
     output:
     tuple val(meta), path("*.bam"),   emit: reheadered_bam
+    tuple val(meta), path("*.bai"),   emit: reheadered_bai
     path  "versions.yml",            emit: versions
 
     // Script to run within the container
     script:
     """
-    bash reheaderbam.sh $bam
+    bash reheaderbam.sh $bam $gff
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -1,15 +1,17 @@
+#nextflow details
 .nextflow*
 work/
+
+# temp data
 data/
+ont_fastq/
 results/
-.DS_Store
 testing/
-testing*
+
+# background
+.DS_Store
 *.pyc
-.gitignore
 .vscode/
-.git/
-.github/
 
 # mkdocs
 site/
