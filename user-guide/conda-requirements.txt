@@ -1,0 +1,23 @@
+# Following tools are used in this pipeline
+
+1. FastQC=0.11.9 
+2. Fastp=0.23.2
+3. Samtools=1.16.1
+4. Samtools_AmpliconClip=1.19.2
+5. Minimap2=2.24
+6. Bcftools=1.17
+7. Ivar=1.4
+8. Freyja=1.50
+9. Nanoplot=1.42.0
+10. Qualimap=2.2.2d
+11. MultiQC=1.18
+12. Python>=3.9
+
+Note: To install these tools in a conda environment, use the following channels and check for dependencies for each tool.
+
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+
+*Note: This is not a yaml file and you cannot deploy it directly to install conda packages.
