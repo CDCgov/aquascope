@@ -1,0 +1,24 @@
+MN908947.3	0	265	.	.	+	Genbank	five_prime_UTR	.	ID=id-MN908947.3:1..265;gbkey=5'UTR
+MN908947.3	0	29903	.	.	+	Genbank	region	.	ID=MN908947.3:1..29903;Dbxref=taxon:2697049;collection-date=Dec-2019;country=China;gb-acronym=SARS-CoV-2;gbkey=Src;genome=genomic;isolate=Wuhan-Hu-1;mol_type=genomic RNA;nat-host=Homo sapiens;old-name=Wuhan seafood market pneumonia virus
+MN908947.3	265	13468	.	.	+	Genbank	CDS	0	ID=cds-QHD43415.1;Parent=gene-orf1ab;Dbxref=NCBI_GP:QHD43415.1;Name=QHD43415.1;Note=translated by -1 ribosomal frameshift;exception=ribosomal slippage;gbkey=CDS;gene=orf1ab;product=orf1ab polyprotein;protein_id=QHD43415.1
+MN908947.3	265	21555	.	.	+	Genbank	gene	.	ID=gene-orf1ab;Name=orf1ab;gbkey=Gene;gene=orf1ab;gene_biotype=protein_coding
+MN908947.3	13467	21555	.	.	+	Genbank	CDS	0	ID=cds-QHD43415.1;Parent=gene-orf1ab;Dbxref=NCBI_GP:QHD43415.1;Name=QHD43415.1;Note=translated by -1 ribosomal frameshift;exception=ribosomal slippage;gbkey=CDS;gene=orf1ab;product=orf1ab polyprotein;protein_id=QHD43415.1
+MN908947.3	21562	25384	.	.	+	Genbank	CDS	0	ID=cds-QHD43416.1;Parent=gene-S;Dbxref=NCBI_GP:QHD43416.1;Name=QHD43416.1;Note=structural protein;gbkey=CDS;gene=S;product=surface glycoprotein;protein_id=QHD43416.1
+MN908947.3	21562	25384	.	.	+	Genbank	gene	.	ID=gene-S;Name=S;gbkey=Gene;gene=S;gene_biotype=protein_coding
+MN908947.3	25392	26220	.	.	+	Genbank	CDS	0	ID=cds-QHD43417.1;Parent=gene-ORF3a;Dbxref=NCBI_GP:QHD43417.1;Name=QHD43417.1;gbkey=CDS;gene=ORF3a;product=ORF3a protein;protein_id=QHD43417.1
+MN908947.3	25392	26220	.	.	+	Genbank	gene	.	ID=gene-ORF3a;Name=ORF3a;gbkey=Gene;gene=ORF3a;gene_biotype=protein_coding
+MN908947.3	26244	26472	.	.	+	Genbank	CDS	0	ID=cds-QHD43418.1;Parent=gene-E;Dbxref=NCBI_GP:QHD43418.1;Name=QHD43418.1;Note=structural protein%3B E protein;gbkey=CDS;gene=E;product=envelope protein;protein_id=QHD43418.1
+MN908947.3	26244	26472	.	.	+	Genbank	gene	.	ID=gene-E;Name=E;gbkey=Gene;gene=E;gene_biotype=protein_coding
+MN908947.3	26522	27191	.	.	+	Genbank	CDS	0	ID=cds-QHD43419.1;Parent=gene-M;Dbxref=NCBI_GP:QHD43419.1;Name=QHD43419.1;Note=structural protein;gbkey=CDS;gene=M;product=membrane glycoprotein;protein_id=QHD43419.1
+MN908947.3	26522	27191	.	.	+	Genbank	gene	.	ID=gene-M;Name=M;gbkey=Gene;gene=M;gene_biotype=protein_coding
+MN908947.3	27201	27387	.	.	+	Genbank	CDS	0	ID=cds-QHD43420.1;Parent=gene-ORF6;Dbxref=NCBI_GP:QHD43420.1;Name=QHD43420.1;gbkey=CDS;gene=ORF6;product=ORF6 protein;protein_id=QHD43420.1
+MN908947.3	27201	27387	.	.	+	Genbank	gene	.	ID=gene-ORF6;Name=ORF6;gbkey=Gene;gene=ORF6;gene_biotype=protein_coding
+MN908947.3	27393	27759	.	.	+	Genbank	CDS	0	ID=cds-QHD43421.1;Parent=gene-ORF7a;Dbxref=NCBI_GP:QHD43421.1;Name=QHD43421.1;gbkey=CDS;gene=ORF7a;product=ORF7a protein;protein_id=QHD43421.1
+MN908947.3	27393	27759	.	.	+	Genbank	gene	.	ID=gene-ORF7a;Name=ORF7a;gbkey=Gene;gene=ORF7a;gene_biotype=protein_coding
+MN908947.3	27893	28259	.	.	+	Genbank	CDS	0	ID=cds-QHD43422.1;Parent=gene-ORF8;Dbxref=NCBI_GP:QHD43422.1;Name=QHD43422.1;gbkey=CDS;gene=ORF8;product=ORF8 protein;protein_id=QHD43422.1
+MN908947.3	27893	28259	.	.	+	Genbank	gene	.	ID=gene-ORF8;Name=ORF8;gbkey=Gene;gene=ORF8;gene_biotype=protein_coding
+MN908947.3	28273	29533	.	.	+	Genbank	CDS	0	ID=cds-QHD43423.2;Parent=gene-N;Dbxref=NCBI_GP:QHD43423.2;Name=QHD43423.2;Note=structural protein;gbkey=CDS;gene=N;product=nucleocapsid phosphoprotein;protein_id=QHD43423.2
+MN908947.3	28273	29533	.	.	+	Genbank	gene	.	ID=gene-N;Name=N;gbkey=Gene;gene=N;gene_biotype=protein_coding
+MN908947.3	29557	29674	.	.	+	Genbank	CDS	0	ID=cds-QHI42199.1;Parent=gene-ORF10;Dbxref=NCBI_GP:QHI42199.1;Name=QHI42199.1;gbkey=CDS;gene=ORF10;product=ORF10 protein;protein_id=QHI42199.1
+MN908947.3	29557	29674	.	.	+	Genbank	gene	.	ID=gene-ORF10;Name=ORF10;gbkey=Gene;gene=ORF10;gene_biotype=protein_coding
+MN908947.3	29674	29903	.	.	+	Genbank	three_prime_UTR	.	ID=id-MN908947.3:29675..29903;gbkey=3'UTR

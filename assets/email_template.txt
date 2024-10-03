@@ -4,8 +4,9 @@
   |\\ | |__  __ /  ` /  \\ |__) |__         }  {
   | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
                                         `._,._,'
-  nf-core/aquascope ${version}
+  nf-core/aquascope v${version}
 ----------------------------------------------------
+
 Run Name: $runName
 
 <% if (success){
