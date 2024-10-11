@@ -5,10 +5,10 @@ process REHEADER_BAM {
 
     tag "$meta.id"
 
-    conda "bioconda::samtools=1.16.1"
+    conda "bioconda::samtools=1.21"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/samtools:1.16.1--h6899075_1' :
-        'quay.io/biocontainers/samtools:1.16.1--h6899075_1' }"
+        'https://depot.galaxyproject.org/singularity/samtools:1.21--h50ea8bc_0' :
+        'quay.io/biocontainers/samtools:1.21--h50ea8bc_0' }"
 
     // Input parameter
     input:
