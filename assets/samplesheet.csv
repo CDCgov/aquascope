@@ -1,3 +1,3 @@
 sample,platform,fastq_1,fastq_2,lr,bam_file,bedfile
-SAMPLE1_PE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R2.fastq.gz,,,https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V3/nCoV-2019.primer.bed
-SAMPLE1_SE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/viralrecon/illumina/amplicon/sample1_R1.fastq.gz,,,,https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V3/nCoV-2019.primer.bed
+SAMPLE_PE,platform,/path/to/fastq/files/sample1_R1.fastq.gz,/path/to/fastq/files/sample1_R2.fastq.gz,,,/link/to/raw/primer.bed/file
+SAMPLE1_SE,platform,/path/to/fastq/files/sample1_R1.fastq.gz,,,,/link/to/raw/primer.bed/file
