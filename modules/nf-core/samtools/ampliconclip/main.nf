@@ -9,7 +9,6 @@ process SAMTOOLS_AMPLICONCLIP {
 
     input:
     tuple val(meta), path(bam)
-    path bed
     val save_cliprejects
     val save_clipstats
 

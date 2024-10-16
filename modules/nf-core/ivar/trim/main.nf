@@ -8,8 +8,7 @@ process IVAR_TRIM {
         'biocontainers/ivar:1.4.3--h43eeafb_0' }"
 
     input:
-    tuple val(meta), path(bam), path(bai)
-    path bed
+    tuple val(meta), path(bam)
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
