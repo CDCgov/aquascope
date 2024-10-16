@@ -14,7 +14,8 @@ process FREYJA_VARIANTS {
 
     output:
     tuple val(meta), path("*.variants.tsv"), path("*.depth.tsv"), emit: variants
-    path "versions.yml"                                         , emit: versions
+    tuple val(meta), path("*.depth.tsv"),                         emit: depths
+    path "versions.yml",                                          emit: versions
 
     when:
     task.ext.when == null || task.ext.when

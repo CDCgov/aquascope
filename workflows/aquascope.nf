@@ -19,6 +19,8 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 include { softwareVersionsToYAML            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMultiqc              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMap                  } from 'plugin/nf-validation'
+include { methodsDescriptionText            } from '../subworkflows/local/utils_nfcore_aquascope_pipeline'
+
 
 /*
 ========================================================================================
@@ -87,22 +89,22 @@ workflow AQUASCOPE {
 
         // MODULE: FastQC on raw data for initial quality checking for short reads
         FASTQC_RAW_SHORT(ch_short_reads)
-        ch_versions = ch_versions.mix(FASTQC_RAW_SHORT.out.versions.first())
+        ch_versions = ch_versions.mix(FASTQC_RAW_SHORT.out.versions.first().ifEmpty(null))
 
         NANOPLOT_RAW_LONG(ch_long_reads)
-        ch_versions = ch_versions.mix(NANOPLOT_RAW_LONG.out.versions.first())
+        ch_versions = ch_versions.mix(NANOPLOT_RAW_LONG.out.versions.first().ifEmpty(null))
 
         // MODULE: Run FastP for short reads
         ch_trimmed_reads_short = Channel.empty()
         FASTP_SHORT(ch_short_reads, [], false, false, false)
         ch_trimmed_reads_short = ch_trimmed_reads_short.mix(FASTP_SHORT.out.reads)
-        ch_versions = ch_versions.mix(FASTP_SHORT.out.versions.first())
+        ch_versions = ch_versions.mix(FASTP_SHORT.out.versions.first().ifEmpty(null))
 
         // MODULE: Run FastP for Long reads
         ch_trimmed_reads_long = Channel.empty()
         FASTP_LONG(ch_long_reads, [], false, false)
         ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
-        ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first())
+        ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first().ifEmpty(null))
 
         // Quality checking for trimmed reads
         FASTQC_SHORT_TRIMMED(ch_trimmed_reads_short)
@@ -114,7 +116,7 @@ workflow AQUASCOPE {
         MINIMAP2_ALIGN_SHORT(ch_trimmed_reads_short, ch_genome, true, false, false)
         ch_short_align_bam = MINIMAP2_ALIGN_SHORT.out.bam
         ch_short_align_bai = MINIMAP2_ALIGN_SHORT.out.bai
-        ch_versions = ch_versions.mix(MINIMAP2_ALIGN_SHORT.out.versions.first())
+        ch_versions = ch_versions.mix(MINIMAP2_ALIGN_SHORT.out.versions.first().ifEmpty(null))
 
         ch_long_align_bam = Channel.empty()
         MINIMAP2_ALIGN_LONG(ch_trimmed_reads_long, ch_genome, true, false, false)
@@ -127,7 +129,7 @@ workflow AQUASCOPE {
         REHEADER_BAM(ch_raw_bam, ch_gff)
         ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
         ch_rehead_sorted_bai = REHEADER_BAM.out.reheadered_bai
-        ch_versions = ch_versions.mix(REHEADER_BAM.out.versions)
+        ch_versions = ch_versions.mix(REHEADER_BAM.out.versions.first().ifEmpty(null))
 
         // Combine channels for further processing
         ch_combined_bam = ch_short_align_bam.mix(ch_long_align_bam, ch_rehead_sorted_bam)
@@ -135,7 +137,7 @@ workflow AQUASCOPE {
         // MODULE : QUALIMAP for post-alignment BAM QC
         QUALIMAP_BAMQC(ch_combined_bam, ch_gff)
         ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
-        ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first())
+        ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first().ifEmpty(null))
 
         // MODULE: RUN IVAR_TRIM_SORT - Illumina only
         ch_ivar_sort_bam = Channel.empty()
@@ -145,14 +147,14 @@ workflow AQUASCOPE {
         ch_ivar_sort_log = IVAR_TRIMMING_SORTING.out.log_out
         ch_ivar_stats = IVAR_TRIMMING_SORTING.out.stats
         ch_ivar_bam = IVAR_TRIMMING_SORTING.out.ivar_bam
-        ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions)
+        ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions.first().ifEmpty(null))
 
         // MODULE: RUN SAMTOOLS_AMPLICON_CLIP_SORT - ONT reads only
         ch_amplicon_sort_bam = Channel.empty()
         ONT_TRIMMING(ch_long_align_bam, params.save_cliprejects, params.save_clipstats)
         ch_amplicon_sort_bam = ONT_TRIMMING.out.bam
         ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
-        ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions)
+        ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.first().ifEmpty(null))
 
         // Combine sorted BAM files
         ch_sorted_bam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
@@ -168,7 +170,7 @@ workflow AQUASCOPE {
             params.save_mpileup // default is false, change it to true in nextflow.config file
         )
         ch_ivar_vcf = IVAR_VARIANTS.out.tsv
-        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first())
+        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first().ifEmpty(null))
 
         // MODULE: RUN FREYJA_VARIANT_CALLING
         ch_freyja_variants = Channel.empty()
@@ -186,19 +188,17 @@ workflow AQUASCOPE {
         ch_freyja_variants = FREYJA_VARIANT_CALLING.out.variants
         ch_freyja_depths = FREYJA_VARIANT_CALLING.out.depths
         ch_freyja_demix = FREYJA_VARIANT_CALLING.out.demix
-        ch_versions = ch_versions.mix(FREYJA_VARIANT_CALLING.out.versions)
+        ch_versions = ch_versions.mix(FREYJA_VARIANT_CALLING.out.versions.first().ifEmpty(null))
 
        // PLUGIN: SOFTWAREVERSION REPORTING
        
-        softwareVersionsToYAML(ch_versions)
-        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_rnaseq_software_mqc_versions.yml', sort: true, newLine: true)
-        .set { ch_collated_versions }
-
+/*         version_yaml = Channel.empty()
+        version_yaml = softwareVersionsToYAML(ch_versions)
+        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_aquascope_software_mqc_versions.yml', sort: true, newLine: true)
+ */
         // MODULE: MULTIQC
 
         ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
         ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{ it[1] }.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{ it[1] }.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
@@ -214,8 +214,13 @@ workflow AQUASCOPE {
             ch_multiqc_logo          = params.multiqc_logo   ? Channel.fromPath(params.multiqc_logo)   : Channel.empty()
             summary_params           = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
             ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
+            ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
+            file(params.multiqc_methods_description, checkIfExists: true) :
+            file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+            ch_methods_description   = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
             ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-            ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+            ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+          //  ch_multiqc_files = ch_multiqc_files.mix(version_yaml)
             // Run MultiQC
             MULTIQC (
                 ch_multiqc_files.collect(),
@@ -225,11 +230,11 @@ workflow AQUASCOPE {
             )
             ch_multiqc_report = MULTIQC.out.report.toList()
         }
-        emit:
-        multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
-        versions       = ch_versions       // channel: [ path(versions.yml) ]
     } else {
     println "The samplesheet validation failed. Please check the input samplesheet and try again."
     exit 1
     }
+    emit:
+        multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
+       // ch_versions      // channel: [ path(versions.yml) ]
 }

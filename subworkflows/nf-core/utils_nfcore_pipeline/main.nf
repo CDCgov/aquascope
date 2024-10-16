@@ -107,6 +107,7 @@ def processVersionsFromYAML(yaml_file) {
     return yaml.dumpAsMap(versions).trim()
 }
 
+
 //
 // Get workflow version for pipeline
 //

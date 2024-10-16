@@ -9,7 +9,8 @@ process FREYJA_DEMIX {
         'biocontainers/freyja:1.5.0--pyhdfd78af_0' }"
 
     input:
-    tuple val(meta), path(variants), path(depths)
+    tuple val(meta), path(variants)
+    tuple val(meta), path(depths)
     path barcodes
     path lineages_meta
 

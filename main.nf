@@ -16,7 +16,7 @@ nextflow.enable.dsl = 2
 // Initialises the workflow and validates parameters
 include  { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
 include  { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
-include  {  getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
+include  { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
 /*
 ========================================================================================
     NAMED WORKFLOW FOR PIPELINE
@@ -60,7 +60,7 @@ workflow NFCORE_AQUASCOPE_DCIPHER {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_AQUASCOPE_DCIPHER.out.multiqc_report
+        AQUASCOPE_DCIPHER.out.multiqc_report
     )
 }
 
@@ -92,7 +92,7 @@ workflow NFCORE_AQUASCOPE {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        NFCORE_AQUASCOPE.out.multiqc_report
+        AQUASCOPE.out.multiqc_report
     )
 }
 

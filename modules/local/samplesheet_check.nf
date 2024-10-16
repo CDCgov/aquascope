@@ -13,15 +13,18 @@ process SAMPLESHEET_CHECK {
     output:
     path '*.csv'       , emit: csv
     path "versions.yml", emit: versions
+    val true           , emit: success
 
     when:
     task.ext.when == null || task.ext.when
 
-    script: // This script is bundled with the pipeline, in hseabolt/metaxplore/bin/
+    script: 
     """
     check_samplesheet.py \\
         $samplesheet \\
-        samplesheet.valid.csv
+        samplesheet.valid.csv \\
+    && echo "SUCCESS" > success.txt
+
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
