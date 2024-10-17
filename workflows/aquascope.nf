@@ -60,7 +60,7 @@ include { MULTIQC                               } from '../modules/nf-core/multi
     RUN MAIN WORKFLOW
 ========================================================================================
 */
-workflow AQUASCOPE {
+workflow runAquascope {
     
     // Initialize channels with known values
     ch_genome = params.fasta ? Channel.value(file(params.fasta)) : Channel.empty()
@@ -197,18 +197,17 @@ workflow AQUASCOPE {
         .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_aquascope_software_mqc_versions.yml', sort: true, newLine: true)
  */
         // MODULE: MULTIQC
-
-        ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
-
         ch_multiqc_report = Channel.empty()
-        if (!params.skip_multiqc) {
+        if (!params.skip_multiqc) {    
+            ch_multiqc_files = Channel.empty()
+            ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
+
             ch_multiqc_config        = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
             ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
             ch_multiqc_logo          = params.multiqc_logo   ? Channel.fromPath(params.multiqc_logo)   : Channel.empty()

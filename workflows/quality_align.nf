@@ -61,7 +61,7 @@ include { MULTIQC                               } from '../modules/nf-core/multi
 ========================================================================================
 */
 
-workflow AQUASCOPE_DCIPHER {
+workflow runQualityAlign {
     
     // Initialize channels with known values
     ch_genome = params.fasta ? Channel.value(file(params.fasta)) : Channel.empty()
@@ -155,6 +155,10 @@ workflow AQUASCOPE_DCIPHER {
         ch_amplicon_sort_bam = ONT_TRIMMING.out.bam
         ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
         ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.first().ifEmpty(null))
+
+        // Combine sorted BAM files
+        ch_sorted_bam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
+        ch_sorted_mixedbam = ch_sorted_bam.mix(ch_amplicon_sort_bam)
 
         // MODULE: Identify variants with iVar
         ch_ivar_vcf = Channel.empty()

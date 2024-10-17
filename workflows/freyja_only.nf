@@ -31,7 +31,7 @@ include { INPUT_BAM_CHECK   	 } from '../modules/local/input_check_bam.nf'
 include { FREYJA_VARIANT_CALLING } from '../subworkflows/local/bam_variant_demix_boot_freyja/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
-workflow FREYJA_STANDALONE {
+workflow runFreyja {
     take: 
     ch_sorted_bam
     
@@ -57,9 +57,9 @@ workflow FREYJA_STANDALONE {
     ch_freyja_demix = FREYJA_VARIANT_CALLING.out.demix
     ch_versions = ch_versions.mix(FREYJA_VARIANT_CALLING.out.versions)
 
+    // Run MultiQC
     ch_multiqc_files = Channel.empty()
     ch_multiqc_files = ch_multiqc_files.mix(ch_freyja_demix.collect{ it[1] }.ifEmpty([]))
-        // Run MultiQC
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
@@ -67,4 +67,31 @@ workflow FREYJA_STANDALONE {
         ch_multiqc_logo.toList()
     )
     multiqc_report = MULTIQC.out.report.toList()
+
+    // MODULE: MULTIQC
+    ch_multiqc_report = Channel.empty()
+    if (!params.skip_multiqc) {    
+        ch_mltiqc_files = Channel.empty()
+        
+        chmultiqc_config        = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+        c_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
+        ch_multiqc_logo          = params.multiqc_logo   ? Channel.fromPath(params.multiqc_logo)   : Channel.empty()
+        summary_params           = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+        ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
+        ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
+        file(params.multiqc_methods_description, checkIfExists: true) :
+       file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+        ch_methods_description   = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
+          //  ch_multiqc_files = ch_multiqc_files.mix(version_yaml)
+            // Run MultiQC
+            MULTIQC (
+                ch_multiqc_files.collect(),
+                ch_multiqc_config.toList(),
+                ch_multiqc_custom_config.toList(),
+                ch_multiqc_logo.toList()
+            )
+            ch_multiqc_report = MULTIQC.out.report.toList()
+        }
 }
