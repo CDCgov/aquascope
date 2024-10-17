@@ -24,9 +24,9 @@ include  { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aqu
 */
 
 // Include the workflows from their respective files
-include { runQualityAlign     } from './workflows/quality_align'
-include { runAquascope         } from './workflows/aquascope'
-include { runFreyja    } from './workflows/freyja_process'
+include { runQualityAlign       } from './workflows/quality_align'
+include { runAquascope          } from './workflows/aquascope'
+include { runFreyja             } from './workflows/freyja_only'
 
 
 //
@@ -61,7 +61,7 @@ workflow QUALITY_ALIGN {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        AQUASCOPE_DCIPHER.out.multiqc_report
+        runQualityAlign.out.multiqc_report
     )
 }
 
@@ -99,7 +99,7 @@ workflow FREYJA_ONLY {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        FREYJA_STANDALONE.out.multiqc_report
+        runFreyja.out.multiqc_report
     )
 }
 
@@ -137,7 +137,7 @@ workflow AQUASCOPE {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        AQUASCOPE.out.multiqc_report
+        runFreyja.out.multiqc_report
     )
 }
 
