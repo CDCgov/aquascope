@@ -51,6 +51,7 @@ include { QUALIMAP_BAMQC                        } from '../modules/nf-core/quali
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SHORT} from '../modules/local/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_LONG } from '../modules/local/minimap2/align/main'
 include { REHEADER_BAM                          } from '../modules/local/reheader_bam.nf'
+include { IVAR_VARIANTS                         } from '../modules/nf-core/ivar/variants/main'
 include { MULTIQC                               } from '../modules/nf-core/multiqc/main'
 
 
@@ -108,7 +109,6 @@ workflow AQUASCOPE_DCIPHER {
 
         // Quality checking for trimmed reads
         FASTQC_SHORT_TRIMMED(ch_trimmed_reads_short)
-
         NANOPLOT_LONG_TRIMMED(ch_trimmed_reads_long)
 
         // MODULE: Align reads against reference genome
@@ -156,9 +156,17 @@ workflow AQUASCOPE_DCIPHER {
         ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
         ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.first().ifEmpty(null))
 
-       /*  version_yaml = Channel.empty()
-        version_yaml = softwareVersionsToYAML(ch_versions)
-        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_aquascope_software_mqc_versions.yml', sort: true, newLine: true) */
+        // MODULE: Identify variants with iVar
+        ch_ivar_vcf = Channel.empty()
+        IVAR_VARIANTS(
+            ch_sorted_bam, 
+            ch_genome, // Assuming the reference and this are the same 
+            ch_genome_fai,
+            ch_gff, 
+            params.save_mpileup // default is false, change it to true in nextflow.config file
+        )
+        ch_ivar_vcf = IVAR_VARIANTS.out.tsv
+        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first().ifEmpty(null))
 
         ch_multiqc_files = Channel.empty()
         ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{ it[1] }.ifEmpty([]))
@@ -168,6 +176,7 @@ workflow AQUASCOPE_DCIPHER {
         ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
         ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
         
+        // MODULE: MULTIQC
         ch_multiqc_report = Channel.empty()
         if (!params.skip_multiqc) {
             ch_multiqc_config        = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
@@ -181,7 +190,7 @@ workflow AQUASCOPE_DCIPHER {
             ch_methods_description   = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
             ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
             ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-           // ch_multiqc_files = ch_multiqc_files.mix(version_yaml)
+            
             // Run MultiQC
             MULTIQC (
                 ch_multiqc_files.collect(),
@@ -197,6 +206,7 @@ workflow AQUASCOPE_DCIPHER {
     exit 1
     }
     emit:
-        multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
+        sorted_mixedbam  = ch_sorted_mixedbam
+        multiqc_report      = ch_multiqc_report // channel: /path/to/multiqc_report.html
         //ch_versions       // channel: [ path(versions.yml) ]
 }

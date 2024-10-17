@@ -1,3 +1,8 @@
+/*
+========================================================================================
+    VALIDATE INPUTS
+========================================================================================
+*/
 nextflow.enable.dsl=2
 
 def checkPathParamList = [params.input, params.fasta, params.gff]
@@ -27,14 +32,13 @@ include { FREYJA_VARIANT_CALLING } from '../subworkflows/local/bam_variant_demix
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
 workflow FREYJA_STANDALONE {
-
+    take: 
+    ch_sorted_bam
+    
+    main:
     ch_genome = params.fasta ? Channel.value(file(params.fasta)) : Channel.empty()
 
-    INPUT_BAM_CHECK ()
-
-    ch_sorted_bam = INPUT_BAM_CHECK.out.bam_files
-
-// MODULE: RUN FREYJA_VARIANT_CALLING
+    // MODULE: RUN FREYJA_VARIANT_CALLING
     ch_freyja_variants = Channel.empty()
     ch_freyja_depths = Channel.empty()
     ch_freyja_demix = Channel.empty()
