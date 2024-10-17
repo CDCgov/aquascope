@@ -1,8 +1,0 @@
-1. Check local module version
-2. Check conf files
-3. Check groovy code
-4. Check the docs
-5. Check test files
-6. Re-run all test data 
-7. Re-run entry points aquascope and freyja_standalone
-8. Update Version
