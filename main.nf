@@ -24,15 +24,16 @@ include  { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aqu
 */
 
 // Include the workflows from their respective files
-include { AQUASCOPE_DCIPHER } from './workflows/aquascope_dcipher'
-include { AQUASCOPE         } from './workflows/aquascope'
-include { FREYJA_STANDALONE } from './workflows/freyja_standalone'
+include { runQualityAlign     } from './workflows/quality_align'
+include { runAquascope         } from './workflows/aquascope'
+include { runFreyja    } from './workflows/freyja_process'
 
 
 //
 // WORKFLOW: Run main nf-core/aquascope analysis pipeline
+// **** QUALITY_ALIGN PIPELINE ONLY RUNS THE PIPELINE UNTIL FREYJA VARIANT ESTIMATION **** //
 //
-workflow NFCORE_AQUASCOPE_DCIPHER {
+workflow QUALITY_ALIGN {
     
     main:
     // **** AQUASCOPE DCIPHER PIPELINE - STAGE 1 produces only sorted BAM files, doesn't run VARIANT CALLING/ESTIMATIONS (IVAR AND FREYJA) **** //
@@ -48,7 +49,7 @@ workflow NFCORE_AQUASCOPE_DCIPHER {
         params.outdir
     )
 
-    AQUASCOPE_DCIPHER()
+    runQualityAlign()
 
     //
     // SUBWORKFLOW: Run completion tasks
@@ -64,7 +65,48 @@ workflow NFCORE_AQUASCOPE_DCIPHER {
     )
 }
 
-workflow NFCORE_AQUASCOPE {
+//
+// WORKFLOW: Run Freyja standalone analysis
+// **** FREYJA_ONLY PIPELINE ONLY RUNS FREYJA VARIANT ESTIMATION FROM AN INPUT BAM SAMPLESHEET **** //
+//
+workflow FREYJA_ONLY {
+    main:
+    //
+    // SUBWORKFLOW: Run initialization tasks
+    //
+    PIPELINE_INITIALISATION (
+        params.version,
+        params.help,
+        params.validate_params,
+        params.monochrome_logs,
+        args,
+        params.outdir
+    )
+    // 
+    // Run the BAM check on inputs
+    // Run the FREYJA workflow
+    INPUT_BAM_CHECK ()
+    ch_sorted_bam = INPUT_BAM_CHECK.out.bam_files
+
+    runFreyja(ch_sorted_bam)
+    //
+    // SUBWORKFLOW: Run completion tasks
+    //
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+        FREYJA_STANDALONE.out.multiqc_report
+    )
+}
+
+//
+// WORKFLOW: Run both QUALITY_ALIGN and FREYJA_ONLY
+//
+workflow AQUASCOPE {
     // **** AQUASCOPE COMPLETE PIPELINE **** //
 
     main:
@@ -80,7 +122,10 @@ workflow NFCORE_AQUASCOPE {
         params.outdir
     )
 
-    AQUASCOPE()
+    // RUN THE QA
+    // RUN THE FREYJA 
+    runQualityAlign()
+    runFreyja(runQualityAlign.out.sorted_mixedbam)
 
     //
     // SUBWORKFLOW: Run completion tasks
@@ -96,59 +141,3 @@ workflow NFCORE_AQUASCOPE {
     )
 }
 
-// **** FREYJA STANDALONE PIPELINE ONLY RUNS FREYJA VARIANT ESTIMATION FROM AN INPUT BAM SAMPLESHEET **** //
-//
-// WORKFLOW: Run Freyja standalone analysis
-//
-workflow NFCORE_FREYJA_STANDALONE {
-    main:
-    //
-    // SUBWORKFLOW: Run initialization tasks
-    //
-    PIPELINE_INITIALISATION (
-        params.version,
-        params.help,
-        params.validate_params,
-        params.monochrome_logs,
-        args,
-        params.outdir
-    )
-    
-    FREYJA_STANDALONE()
-    //
-    // SUBWORKFLOW: Run completion tasks
-    //
-    PIPELINE_COMPLETION (
-        params.email,
-        params.email_on_fail,
-        params.plaintext_email,
-        params.outdir,
-        params.monochrome_logs,
-        params.hook_url,
-        FREYJA_STANDALONE.out.multiqc_report
-    )
-}
-
-/*
-========================================================================================
-    RUN THE SELECTED WORKFLOW
-========================================================================================
-*/
-
-workflow {
-    if (params.workflow == 'aquascope') {
-        NFCORE_AQUASCOPE()
-    } else if (params.workflow == 'freyja_standalone') {
-        NFCORE_FREYJA_STANDALONE()
-    } else if (params.workflow   == 'aquascope_dcipher') {
-        NFCORE_AQUASCOPE_DCIPHER()
-    } else {
-        error "Unknown workflow specified: ${params.workflow}. Valid options are 'aquascope' or 'freyja_standalone' or aquascope_dcipher."
-    }
-}
-
-/*
-========================================================================================
-    THE END
-========================================================================================
-*/
