@@ -55,7 +55,9 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 5. Run the pipeline profile
     ```
-    nextflow run main.nf -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+    nextflow run main.nf \
+		-profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+		-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE>
     ```
     A. The `-profile test` will run the test parameters and samples only for Illumina test data
    

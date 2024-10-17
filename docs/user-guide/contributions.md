@@ -2,8 +2,9 @@
  
 - [Boddapati, A.](https://github.com/arunbodd)
 - [Hunter, S.](https://github.com/hseabolt)
+- [Chavan, S.](https://github.com/schavan023)
+- [Chill, S.](https://github.com/slsevilla)
 - [Caravas, J.](https://github.com/jacaravas)
 - [Cornforth, D.](https://github.com/dcornforth22)
 - [Yoder, J.](https://github.com/jessebyoder)
 - [Morrison, S.](https://github.com/SMorisson42)
-- [Chavan, S.](https://github.com/schavan023)

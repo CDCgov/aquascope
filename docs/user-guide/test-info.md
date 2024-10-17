@@ -14,10 +14,12 @@ Test [samplesheet] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesh
 
 A. Submit Pipeline [Internal-CDC-Users]
 ```
-nextflow run main.nf -profile test,singularity,rosalind -c <custom-path-to-rosalind-config>
+nextflow run main.nf \
+-profile test_illumina,singularity,scicomp_rosalind \
+-c <custom-path-to-rosalind-config>
 ```
 
 B. Submit Pipeline [External-Users]
 ```
-nextflow run main.nf -profile test,<docker/singularity/conda> -c <SGE/PBS/SLURM/CLOUD config>
+nextflow run main.nf -profile test_illumina,<docker/singularity/conda> -c <SGE/PBS/SLURM/CLOUD config>
 ```
