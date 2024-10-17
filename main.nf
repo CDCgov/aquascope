@@ -25,9 +25,17 @@ include  { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aqu
 
 // Include the workflows from their respective files
 include { runQualityAlign       } from './workflows/quality_align'
-include { runAquascope          } from './workflows/aquascope'
 include { runFreyja             } from './workflows/freyja_only'
+include { runAquascope          } from './workflows/aquascope'
 
+/*
+========================================================================================
+    NAMED MODULES FOR PIPELINE
+========================================================================================
+*/
+
+// Include the workflows from their respective files
+include { INPUT_BAM_CHECK       } from './modules/local/input_check_bam.nf'
 
 //
 // WORKFLOW: Run main nf-core/aquascope analysis pipeline
@@ -87,8 +95,15 @@ workflow FREYJA_ONLY {
     // Run the FREYJA workflow
     INPUT_BAM_CHECK ()
     ch_sorted_bam = INPUT_BAM_CHECK.out.bam_files
+    
+    // Set empty channel
+    multiqc_files=Channel.empty()
 
-    runFreyja(ch_sorted_bam)
+    // Run variant calling
+    runFreyja(
+        ch_sorted_bam,
+        multiqc_files)
+
     //
     // SUBWORKFLOW: Run completion tasks
     //
@@ -123,9 +138,13 @@ workflow AQUASCOPE {
     )
 
     // RUN THE QA
-    // RUN THE FREYJA 
     runQualityAlign()
-    runFreyja(runQualityAlign.out.sorted_mixedbam)
+
+    // RUN THE FREYJA 
+    runFreyja(
+        runQualityAlign.out.sorted_mixedbam,
+        runQualityAlign.out.multiqc_files
+    )
 
     //
     // SUBWORKFLOW: Run completion tasks

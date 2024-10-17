@@ -170,27 +170,31 @@ workflow runQualityAlign {
             params.save_mpileup // default is false, change it to true in nextflow.config file
         )
         ch_ivar_vcf = IVAR_VARIANTS.out.tsv
-        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first().ifEmpty(null))
-
-        ch_multiqc_files = Channel.empty()
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
-        ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
+        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first().ifEmpty(null))       
         
         // MODULE: MULTIQC
-        ch_multiqc_report = Channel.empty()
-        if (!params.skip_multiqc) {
+        if (!params.skip_multiqc) {    
+            // set empty
+            ch_multiqc_report = Channel.empty()
+            ch_multiqc_files = Channel.empty()
+            
+            // merge files
+            ch_multiqc_files = ch_multiqc_files.mix(FASTQC_RAW_SHORT.out.zip.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FASTP_SHORT.out.json.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
+            ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
+
+            // set configs, defaults
             ch_multiqc_config        = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-            ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-            ch_multiqc_logo          = params.multiqc_logo   ? Channel.fromPath(params.multiqc_logo, checkIfExists: true)   : Channel.empty()
+            ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config) : Channel.empty()
+            ch_multiqc_logo          = params.multiqc_logo   ? Channel.fromPath(params.multiqc_logo)   : Channel.empty()
             summary_params           = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
             ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
             ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
-            file(params.multiqc_methods_description, checkIfExists: true) :
-            file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+                file(params.multiqc_methods_description, checkIfExists: true) :
+                file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
             ch_methods_description   = Channel.value(methodsDescriptionText(ch_multiqc_custom_methods_description))
             ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
             ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
@@ -204,13 +208,13 @@ workflow runQualityAlign {
             )
             ch_multiqc_report = MULTIQC.out.report.toList()
         }
-
     } else {
-    println "The samplesheet validation failed. Please check the input samplesheet and try again."
-    exit 1
+        println "The samplesheet validation failed. Please check the input samplesheet and try again."
+        exit 1
     }
+
     emit:
-        sorted_mixedbam  = ch_sorted_mixedbam
-        multiqc_report      = ch_multiqc_report // channel: /path/to/multiqc_report.html
-        //ch_versions       // channel: [ path(versions.yml) ]
+        sorted_mixedbam         = ch_sorted_mixedbam
+        multiqc_files           = ch_multiqc_files
+        multiqc_report          = ch_multiqc_report
 }
