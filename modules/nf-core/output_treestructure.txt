@@ -1,0 +1,168 @@
+.
+├── fastp
+│   ├── environment.yml
+│   ├── main.nf
+│   ├── meta.yml
+│   └── tests
+│       ├── main.nf.test
+│       ├── main.nf.test.snap
+│       ├── nextflow.interleaved.config
+│       ├── nextflow.save_failed.config
+│       └── tags.yml
+├── fastqc
+│   ├── environment.yml
+│   ├── main.nf
+│   ├── meta.yml
+│   └── tests
+│       ├── main.nf.test
+│       ├── main.nf.test.snap
+│       └── tags.yml
+├── freyja
+│   ├── boot
+│   │   ├── environment.yml
+│   │   ├── main.nf
+│   │   ├── meta.yml
+│   │   └── tests
+│   │       ├── main.nf.test
+│   │       ├── main.nf.test.snap
+│   │       ├── nextflow.config
+│   │       └── tags.yml
+│   ├── demix
+│   │   ├── environment.yml
+│   │   ├── main.nf
+│   │   ├── meta.yml
+│   │   └── tests
+│   │       ├── main.nf.test
+│   │       ├── main.nf.test.snap
+│   │       ├── nextflow.config
+│   │       └── tags.yml
+│   ├── update
+│   │   ├── environment.yml
+│   │   ├── main.nf
+│   │   ├── meta.yml
+│   │   └── tests
+│   │       ├── main.nf.test
+│   │       ├── main.nf.test.snap
+│   │       └── tags.yml
+│   └── variants
+│       ├── environment.yml
+│       ├── main.nf
+│       ├── meta.yml
+│       └── tests
+│           ├── main.nf.test
+│           ├── main.nf.test.snap
+│           └── tags.yml
+├── ivar
+│   ├── trim
+│   │   ├── environment.yml
+│   │   ├── main.nf
+│   │   ├── meta.yml
+│   │   └── tests
+│   │       ├── main.nf.test
+│   │       └── main.nf.test.snap
+│   └── variants
+│       ├── environment.yml
+│       ├── main.nf
+│       ├── meta.yml
+│       └── tests
+│           ├── main.nf.test
+│           └── main.nf.test.snap
+├── minimap2
+│   └── align
+│       ├── environment.yml
+│       ├── main.nf
+│       ├── meta.yml
+│       └── tests
+│           ├── main.nf.test
+│           ├── main.nf.test.snap
+│           └── tags.yml
+├── multiqc
+│   ├── environment.yml
+│   ├── main.nf
+│   ├── meta.yml
+│   └── tests
+│       ├── main.nf.test
+│       ├── main.nf.test.snap
+│       └── tags.yml
+├── nanoplot
+│   ├── environment.yml
+│   ├── main.nf
+│   ├── meta.yml
+│   └── tests
+│       ├── main.nf.test
+│       ├── main.nf.test.snap
+│       └── tags.yaml
+├── output_treestructure.txt
+├── qualimap
+│   └── bamqc
+│       ├── environment.yml
+│       ├── main.nf
+│       ├── meta.yml
+│       └── tests
+│           ├── main.nf.test
+│           ├── main.nf.test.snap
+│           └── tags.yml
+└── samtools
+    ├── ampliconclip
+    │   ├── environment.yml
+    │   ├── main.nf
+    │   ├── meta.yml
+    │   └── tests
+    │       ├── main.nf.test
+    │       ├── main.nf.test.snap
+    │       └── tags.yml
+    ├── faidx
+    │   ├── environment.yml
+    │   ├── main.nf
+    │   ├── meta.yml
+    │   └── tests
+    │       ├── main.nf.test
+    │       ├── main.nf.test.snap
+    │       ├── nextflow2.config
+    │       ├── nextflow.config
+    │       └── tags.yml
+    ├── flagstat
+    │   ├── environment.yml
+    │   ├── main.nf
+    │   ├── meta.yml
+    │   └── tests
+    │       ├── main.nf.test
+    │       ├── main.nf.test.snap
+    │       └── tags.yml
+    ├── idxstats
+    │   ├── environment.yml
+    │   ├── main.nf
+    │   ├── meta.yml
+    │   └── tests
+    │       ├── main.nf.test
+    │       ├── main.nf.test.snap
+    │       └── tags.yml
+    ├── index
+    │   ├── environment.yml
+    │   ├── main.nf
+    │   ├── meta.yml
+    │   └── tests
+    │       ├── csi.nextflow.config
+    │       ├── main.nf.test
+    │       ├── main.nf.test.snap
+    │       └── tags.yml
+    ├── sort
+    │   ├── environment.yml
+    │   ├── main.nf
+    │   ├── meta.yml
+    │   └── tests
+    │       ├── main.nf.test
+    │       ├── main.nf.test.snap
+    │       ├── nextflow.config
+    │       ├── nextflow_cram.config
+    │       └── tags.yml
+    └── stats
+        ├── environment.yml
+        ├── main.nf
+        ├── meta.yml
+        └── tests
+            ├── main.nf.test
+            ├── main.nf.test.snap
+            └── tags.yml
+
+43 directories, 122 files

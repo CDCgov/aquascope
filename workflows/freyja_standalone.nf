@@ -1,30 +1,30 @@
-def summary_params = NfcoreSchema.paramsSummaryMap(workflow, params)
+nextflow.enable.dsl=2
 
-// Validate input parameters
-WorkflowAquascope.initialise(params, log)
-
-// TODO nf-core: Add all file path parameters for the pipeline to the list below
-// Check input path parameters to see if they exist
-
-def checkPathParamList = [params.input, params.fasta]
+def checkPathParamList = [params.input, params.fasta, params.gff]
 
 for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
 
-
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified! please specify samplesheet containing BAM files only! Run bam_to_samplesheet.py to generate bamfile samplesheet' }
+
+
+/*
+========================================================================================
+    IMPORT NF-CORE MODULES/SUBWORKFLOWS/PLUGINS
+========================================================================================
+*/
+include { softwareVersionsToYAML            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { paramsSummaryMultiqc              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { paramsSummaryMap                  } from 'plugin/nf-validation'
+
+/*
+========================================================================================
+    IMPORT MODULES/SUBWORKFLOWS
+========================================================================================
+*/
 
 include { INPUT_BAM_CHECK   	 } from '../modules/local/input_check_bam.nf'
 include { FREYJA_VARIANT_CALLING } from '../subworkflows/local/bam_variant_demix_boot_freyja/main'
-include { MULTIQC                } from '../modules/nf-core/modules/nf-core/multiqc/main'
-
-
-
-def multiqc_report = []
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
+include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
 workflow FREYJA_STANDALONE {
 
