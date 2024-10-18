@@ -1,7 +1,7 @@
 
-include { FREYJA_VARIANTS   } from '../../../modules/nf-core/modules/nf-core/freyja/variants/main'
-include { FREYJA_UPDATE     } from '../../../modules/nf-core/modules/nf-core/freyja/update/main'
-include { FREYJA_DEMIX      } from '../../../modules/nf-core/modules/nf-core/freyja/demix/main'
+include { FREYJA_VARIANTS   } from '../../../modules/nf-core/freyja/variants/main'
+include { FREYJA_UPDATE     } from '../../../modules/nf-core/freyja/update/main'
+include { FREYJA_DEMIX      } from '../../../modules/nf-core/freyja/demix/main'
 //include { FREYJA_BOOT       } from '../../../modules/nf-core/modules/nf-core/freyja/boot/main'
 
 workflow FREYJA_VARIANT_CALLING {

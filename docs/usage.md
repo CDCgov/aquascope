@@ -106,11 +106,8 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
     * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
 * `conda`
     * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
-* `test_ont`
-    * A profile with a complete configuration for automated testing of ONT data
-    * Includes links to test data so needs no other parameters
-* `test_illumina`
-    * A profile with a complete configuration for automated testing of Illumina data
+* `test`
+    * A profile with a complete configuration for automated testing
     * Includes links to test data so needs no other parameters
 
 ### `-resume`
