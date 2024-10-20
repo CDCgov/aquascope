@@ -2,7 +2,7 @@
 // Subworkflow: Run Trimming on ONT reads
 //
 
-include { SAMTOOLS_AMPLICONCLIP                 } from '../../modules/nf-core/samtools/ampliconclip/main'
+include { SAMTOOLS_AMPLICONCLIP                 } from '../../modules/local/samtools/ampliconclip/main'
 include { BAM_SORT_STATS_SAMTOOLS               } from './bam_sort_stats_samtools/main'
 
 
