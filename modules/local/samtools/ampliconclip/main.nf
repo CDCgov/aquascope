@@ -26,15 +26,28 @@ process SAMTOOLS_AMPLICONCLIP {
     def prefix = task.ext.prefix ?: "${meta.id}"
     def rejects = save_cliprejects ? "--rejects-file ${prefix}.cliprejects.bam" : ""
     def stats   = save_clipstats   ? "-f ${prefix}.clipstats.txt"               : ""
+    def bedfile = "${meta.bedfile}"
+    def platform = "${meta.platform}"
+    def bedfile_basename = "${bedfile}".tokenize('/').last()
     if ("$bam" == "${prefix}.bam") error "Input and output names are the same, use \"task.ext.prefix\" to disambiguate!"
     """
+    if [[ ${bedfile} == https://* ]]; then
+        wget -O $bedfile_basename $bedfile
+    elif [[ -f ${bedfile} ]]; then
+        # Local file, no need to download
+        cp ${bedfile} ${bedfile_basename}
+    else
+        echo "Invalid bedfile: ${bedfile}"
+        exit 1
+    fi
+
     samtools \\
         ampliconclip \\
         --threads ${task.cpus-1} \\
         $args \\
         $rejects \\
         $stats \\
-        -b $bed \\
+        -b ${bedfile_basename} \\
         -o ${prefix}.clipallowed.bam \\
         $bam
 
