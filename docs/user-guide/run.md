@@ -3,11 +3,25 @@
 ## Input Requirements
 To run the pipeline, the following inputs may be given at run-time:
 - profile (required)
-- samplesheet (fastq for Aquascope and Bams for Freyja_standalone workflows) (required)
+- entry (required)
+- input (required)
+- outdir (optional)
 - references file (optional)
 - Freyja-specific files (optional)
 
-## Profile (Required)
+```
+    nextflow run main.nf \
+    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute/test> \
+	-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE> \
+    --input <path/to/samplesheet> \
+    --outdir <path/to/out/dir> \
+    --fasta </path/to/fasta/> \
+    --freyja_barcodes <path_to_barcode_file> \
+    --freyja_lineages_meta <path_to_lineage_file> \
+
+```
+
+### Profile (Required)
 Select from any of the profiles:
 - docker
 - singularity
@@ -17,61 +31,78 @@ Select from any of the profiles:
 - conda
 - instutitute_specific_profiles
 
-```
-    nextflow run main.nf \
-    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
-    --input samplesheet.csv \
-    --outdir results
-```
-
-These profiles can be combined together
+Example:
 
 ```
     nextflow run main \
-    -profile docker,rosalind \
-    --input samplesheet.csv \
-    --outdir results
+    -profile docker,scicomp_rosalind \
+    -entry AQUASCOPE \
+    --input <path/to/samplesheet> \
+    --outdir <path/to/out/dir>
 ```
 
-## Samplesheet (Required)
-Refer to the `Preparing Files` documentaiton for specific samplesheet-related instructions.
+### Entry (Required)
+Three entry points are available within Aquascope
 
-## References (Optional)
-Fasta, bed and gff parameters are defaulted to references in the assets folder of the pipeline. To change, the `--fasta`, `--gff` and `--gff3` are available as input parameters.
-    
-- Bed file is used for QUALIMAP-BAMQC, GFF in GFF3 format for FREYJA variant calling 
+- QUALITY_ALIGN: Runs pipeline beginning from quality control through alignment
 
-- Docker isn't supported on CDC (Rosalind) infrastructure.
+- FREYJA_ONLY: Runs the pipeline beginning with BAM files through variant calling
+
+- AQUASCOPE: Runs both QUALITY_ALIGN followed by FREYJA_ONLY
 
 ```
     nextflow run main.nf \
-    -profile <docker/singularity> \
-    --input samplesheet.csv \
-    --outdir results \
-    --fasta /path/to/fasta/
+    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+	-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE> \
+    --input <path/to/samplesheet> \
+    --outdir <path/to/out/dir> \
+    --fasta </path/to/fasta/> \
+    --freyja_barcodes <path_to_barcode_file> \
+    --freyja_lineages_meta <path_to_lineage_file> \
+
 ```
 
-## Freyja Curated Lineages / Barcodes
+### Samplesheet (Required)
+Refer to the `Preparing Files` documentaiton for specific samplesheet-related instructions.
+
+Example:
+
+```
+    nextflow run main.nf \
+    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+	-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE> \
+    --input samplesheet.csv \
+    --outdir <path/to/out/dir>
+```
+
+### References (Optional)
+Fasta, BED and GFF parameters are defaulted to references in the assets folder of the pipeline. To change, the `--fasta`, `--gff` and `--gff3` are available as input parameters.
+    
+- NOTES:
+
+    - Docker isn't supported on CDC (Rosalind) infrastructure.
+
+    - BED file is used for QUALIMAP-BAMQC, GFF in GFF3 format for FREYJA variant calling 
+
+Example: 
+```
+    nextflow run main.nf \
+    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+	-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE> \
+    --input <path/to/samplesheet> \
+    --outdir <path/to/out/dir> \
+    --fasta reference.fasta
+```
+
+### Freyja Curated Lineages / Barcodes
 Users can supply saved freyja-curated lineages and barcodes:
 
 ```
-nextflow run main.nf \
-    -profile <docker/singularity> \
-    --input samplesheet.csv \
+    nextflow run main.nf \
+    -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+	-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE> \
+    --input <path/to/samplesheet> \
+    --outdir <path/to/out/dir> \
     --freyja_barcodes <path_to_barcode_file> \
-    --freyja_lineages_meta <path_to_lineage_file> \
-    --outdir results
-```
-
-## Running Freyja_standalone pipeline
-Refer to `Preparing Files` documentation to how to create bam_samplesheet.csv file
-
-```
-nextflow run main.nf \
-    -profile <docker/singularity> \
-    --workflow freyja_standalone \ <default is aquascope, if not specified>
-    --input bam_samplesheet.csv \
-    --freyja_barcodes <path_to_barcode_file> \
-    --freyja_lineages_meta <path_to_lineage_file> \
-    --outdir freyj_standalone_results
+    --freyja_lineages_meta <path_to_lineage_file>
 ```
