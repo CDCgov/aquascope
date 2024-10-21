@@ -26,7 +26,6 @@ include  { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aqu
 // Include the workflows from their respective files
 include { runQualityAlign       } from './workflows/quality_align'
 include { runFreyja             } from './workflows/freyja_only'
-include { runAquascope          } from './workflows/aquascope'
 
 /*
 ========================================================================================
