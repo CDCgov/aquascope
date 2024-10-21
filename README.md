@@ -55,9 +55,10 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 
 5. Run the pipeline profile
     ```
-    nextflow run main.nf \
-		-profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
-		-entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE>
+    nextflow run \
+      main.nf \
+      -profile <docker/singularity/podman/shifter/charliecloud/conda/institute> \
+		  -entry <QUALITY_ALIGN, FREYJA_ONLY, AQUASCOPE>
     ```
     A. The `-profile test` will run the test parameters and samples only for Illumina test data
    
@@ -72,8 +73,6 @@ For more detailed documentation, please visit our [user-guides](https://cdcgov.g
 `Aquascope` was largely developed by [OAMD's](https://www.cdc.gov/amd/index.html) SciComp Team, with inputs from [NWSS](https://www.cdc.gov/nwss/wastewater-surveillance.html) and the DCIPHER Team at Palantir. Detailed contributions can be found in our [user-guides](https://cdcgov.github.io/aquascope/user-guide/contributions/).
 
 If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#aquascope` channel](https://nfcore.slack.com/channels/aquascope) (you can join with [this invite](https://nf-co.re/join/slack)).
 
 ## Citations
 An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
