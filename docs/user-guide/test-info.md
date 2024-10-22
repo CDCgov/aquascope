@@ -9,17 +9,56 @@ B. *CDC-Users Only* Your NXF_WORK, NXF_CONDA_CACHEDIR, NXF_SINGULARITY_CACHEDIR 
 C. *CDC-Users Only* Please check with your `HPC infrastructure Team` for custom config files. We have a `rosalind` cluster config to run this pipeline and please reach out to [`SciComp`] (https://info.biotech.cdc.gov/info/) for additional help.
 
 
-## 6.2 Submit the test data
-Test [samplesheet] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet.csv) is included in the .assets/ directory
+## 6.2 Decide the test to perform
+The pipeline includes three different entry points (View [Getting Started](https://github.com/CDCgov/aquascope/blob/feature_docs/docs/user-guide/getting-started.md) for more information) and three different data inputs (Illumina, ONT, BAM). Determine which test meets your needs.
 
-A. Submit Pipeline [Internal-CDC-Users]
+A. Test Illumina Input 
+Test [samplesheet] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet_test_illumina.csv) is included in the .assets/ directory. The `test_illumina` profile will automatically configure this input.
+
 ```
-nextflow run main.nf \
--profile test_illumina,singularity,scicomp_rosalind \
--c <custom-path-to-rosalind-config>
+### CDC Internal Users
+nextflow run \
+main.nf \
+-profile test_illumina,singularity,scicomp_rosalind
+-entry AQUASCOPE
+
+### All Other Users
+nextflow run \
+main.nf \
+-profile test_illumina,<docker,singularity,nf-core institutional config
+-entry AQUASCOPE
 ```
 
-B. Submit Pipeline [External-Users]
+B. Test ONT Input 
+Test [samplesheet] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet_test_ont.csv) is included in the .assets/ directory. The `test_ont` profile will automatically configure this input.
+
 ```
-nextflow run main.nf -profile test_illumina,<docker/singularity/conda> -c <SGE/PBS/SLURM/CLOUD config>
+### CDC Internal Users
+nextflow run \
+main.nf \
+-profile test_ont,singularity,scicomp_rosalind
+-entry AQUASCOPE
+
+### All Other Users
+nextflow run \
+main.nf \
+-profile test_ont,<docker,singularity,nf-core institutional config
+-entry AQUASCOPE
+```
+
+C. Test BAM Input 
+Test [samplesheet] (https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet_test_bam.csv) is included in the .assets/ directory. The `test_bams` profile will automatically configure this input.
+
+```
+### CDC Internal Users
+nextflow run \
+main.nf \
+-profile test_bams,singularity,scicomp_rosalind
+-entry AQUASCOPE
+
+### All Other Users
+nextflow run \
+main.nf \
+-profile test_bams,<docker,singularity,nf-core institutional config
+-entry AQUASCOPE
 ```
