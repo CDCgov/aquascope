@@ -10,4 +10,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: nf-core/setup-nextflow@v1
-      - run: nextflow run main.nf --resume --profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
+      - run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
