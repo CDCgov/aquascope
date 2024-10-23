@@ -1,5 +1,6 @@
 name: mkdocs_build_deploy
 on:
+  workflow_dispatch:
   push:
    branches:
     - main
