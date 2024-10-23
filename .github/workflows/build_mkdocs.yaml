@@ -2,8 +2,8 @@ name: mkdocs_build_deploy
 on:
   push:
    branches:
-    -main
-    -dev
+    - main
+    - dev
    paths:
      - 'docs/**'
 
