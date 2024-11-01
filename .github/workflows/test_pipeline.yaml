@@ -15,3 +15,5 @@ jobs:
       - run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
       - run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
       - run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir ~/projects/tmp/freyja
+      - run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/projects/tmp/ont
+      - run: nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
