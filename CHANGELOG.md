@@ -5,6 +5,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## dev
 
+## v3.0.0
+
+
 ## v2.3.1
 ### `Added`
 added awk to assign gff_feature to freyja - variant calls by @arunbodd in #53
