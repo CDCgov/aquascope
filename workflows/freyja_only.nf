@@ -29,7 +29,7 @@ include { methodsDescriptionText            } from '../subworkflows/local/utils_
 */
 
 include { INPUT_BAM_CHECK   	 } from '../modules/local/input_check_bam.nf'
-include { FREYJA_VARIANT_CALLING } from '../subworkflows/local/bam_variant_demix_boot_freyja/main'
+include { FREYJA_VARIANT_CALLING } from '../subworkflows/local/freyja_variant_demix_update/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 
 workflow runFreyja {
