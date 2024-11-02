@@ -42,7 +42,6 @@ workflow runFreyja {
 
     // MODULE: RUN FREYJA_VARIANT_CALLING
     ch_freyja_variants = Channel.empty()
-    ch_freyja_depths = Channel.empty()
     ch_freyja_demix = Channel.empty()
     ch_freyja_lineages = Channel.empty()
     ch_freyja_summarized = Channel.empty()
@@ -55,7 +54,6 @@ workflow runFreyja {
         params.freyja_lineages_meta
     )
     ch_freyja_variants = FREYJA_VARIANT_CALLING.out.variants
-    ch_freyja_depths = FREYJA_VARIANT_CALLING.out.depths
     ch_freyja_demix = FREYJA_VARIANT_CALLING.out.demix
     ch_versions = ch_versions.mix(FREYJA_VARIANT_CALLING.out.versions)
 
