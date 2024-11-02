@@ -86,26 +86,26 @@ workflow runQualityAlign {
         // MODULE: Create Fasta Index file using samtools faidx
         SAMTOOLS_FAIDX(ch_genome)
         ch_genome_fai = SAMTOOLS_FAIDX.out.fai
-        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.ifEmpty(null))
 
         // MODULE: FastQC on raw data for initial quality checking for short reads
         FASTQC_RAW_SHORT(ch_short_reads)
-        ch_versions = ch_versions.mix(FASTQC_RAW_SHORT.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(FASTQC_RAW_SHORT.out.versions.ifEmpty(null))
 
         NANOPLOT_RAW_LONG(ch_long_reads)
-        ch_versions = ch_versions.mix(NANOPLOT_RAW_LONG.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(NANOPLOT_RAW_LONG.out.versions.ifEmpty(null))
 
         // MODULE: Run FastP for short reads
         ch_trimmed_reads_short = Channel.empty()
         FASTP_SHORT(ch_short_reads, [], false, false, false)
         ch_trimmed_reads_short = ch_trimmed_reads_short.mix(FASTP_SHORT.out.reads)
-        ch_versions = ch_versions.mix(FASTP_SHORT.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(FASTP_SHORT.out.versions.ifEmpty(null))
 
         // MODULE: Run FastP for Long reads
         ch_trimmed_reads_long = Channel.empty()
         FASTP_LONG(ch_long_reads, [], false, false)
         ch_trimmed_reads_long = ch_trimmed_reads_long.mix(FASTP_LONG.out.reads)
-        ch_versions = ch_versions.mix(FASTP_LONG.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(FASTP_LONG.out.versions.ifEmpty(null))
 
         // Quality checking for trimmed reads
         FASTQC_SHORT_TRIMMED(ch_trimmed_reads_short)
@@ -116,7 +116,7 @@ workflow runQualityAlign {
         MINIMAP2_ALIGN_SHORT(ch_trimmed_reads_short, ch_genome, true, false, false)
         ch_short_align_bam = MINIMAP2_ALIGN_SHORT.out.bam
         ch_short_align_bai = MINIMAP2_ALIGN_SHORT.out.bai
-        ch_versions = ch_versions.mix(MINIMAP2_ALIGN_SHORT.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(MINIMAP2_ALIGN_SHORT.out.versions.ifEmpty(null))
 
         ch_long_align_bam = Channel.empty()
         MINIMAP2_ALIGN_LONG(ch_trimmed_reads_long, ch_genome, true, false, false)
@@ -129,7 +129,7 @@ workflow runQualityAlign {
         REHEADER_BAM(ch_raw_bam, ch_gff)
         ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
         ch_rehead_sorted_bai = REHEADER_BAM.out.reheadered_bai
-        ch_versions = ch_versions.mix(REHEADER_BAM.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(REHEADER_BAM.out.versions.ifEmpty(null))
 
         // Combine channels for further processing
         ch_combined_bam = ch_short_align_bam.mix(ch_long_align_bam, ch_rehead_sorted_bam)
@@ -137,7 +137,7 @@ workflow runQualityAlign {
         // MODULE : QUALIMAP for post-alignment BAM QC
         QUALIMAP_BAMQC(ch_combined_bam, ch_gff)
         ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
-        ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.ifEmpty(null))
 
         // MODULE: RUN IVAR_TRIM_SORT - Illumina only
         ch_ivar_sort_bam = Channel.empty()
@@ -147,14 +147,14 @@ workflow runQualityAlign {
         ch_ivar_sort_log = IVAR_TRIMMING_SORTING.out.log_out
         ch_ivar_stats = IVAR_TRIMMING_SORTING.out.stats
         ch_ivar_bam = IVAR_TRIMMING_SORTING.out.ivar_bam
-        ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions.ifEmpty(null))
 
         // MODULE: RUN SAMTOOLS_AMPLICON_CLIP_SORT - ONT reads only
         ch_amplicon_sort_bam = Channel.empty()
         ONT_TRIMMING(ch_long_align_bam, params.save_cliprejects, params.save_clipstats)
         ch_amplicon_sort_bam = ONT_TRIMMING.out.bam
         ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
-        ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.first().ifEmpty(null))
+        ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.ifEmpty(null))
 
         // Combine sorted BAM files
         ch_sorted_bam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
@@ -170,7 +170,7 @@ workflow runQualityAlign {
             params.save_mpileup // default is false, change it to true in nextflow.config file
         )
         ch_ivar_vcf = IVAR_VARIANTS.out.tsv
-        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.first().ifEmpty(null))       
+        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.ifEmpty(null))       
         
         // MODULE: MULTIQC
         if (!params.skip_multiqc) {    

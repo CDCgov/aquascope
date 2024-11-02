@@ -1,7 +1,7 @@
 
-include { FREYJA_VARIANTS   } from '../../../modules/nf-core/freyja/variants/main'
-include { FREYJA_UPDATE     } from '../../../modules/nf-core/freyja/update/main'
-include { FREYJA_DEMIX      } from '../../../modules/nf-core/freyja/demix/main'
+include { FREYJA_VARIANTS   } from '../../../modules/local/freyja/variants/main'
+include { FREYJA_UPDATE     } from '../../../modules/local/freyja/update/main'
+include { FREYJA_DEMIX      } from '../../../modules/local/freyja/demix/main'
 
 workflow FREYJA_VARIANT_CALLING {
 
@@ -24,9 +24,8 @@ workflow FREYJA_VARIANT_CALLING {
         ch_fasta
     )
     ch_freyja_variants = FREYJA_VARIANTS.out.variants
-    ch_freyja_depths   = FREYJA_VARIANTS.out.depths
 
-    ch_versions = ch_versions.mix(FREYJA_VARIANTS.out.versions.first())
+    ch_versions = ch_versions.mix(FREYJA_VARIANTS.out.versions)
 
     //
     // Update the database if none are given.
@@ -39,7 +38,7 @@ workflow FREYJA_VARIANT_CALLING {
         ch_barcodes      = FREYJA_UPDATE.out.barcodes
         ch_lineages_meta = FREYJA_UPDATE.out.lineages_meta
 
-        ch_versions = ch_versions.mix(FREYJA_UPDATE.out.versions.first())
+        ch_versions = ch_versions.mix(FREYJA_UPDATE.out.versions)
     }
 
     //
@@ -47,16 +46,14 @@ workflow FREYJA_VARIANT_CALLING {
     //
     FREYJA_DEMIX (
         ch_freyja_variants,
-        ch_freyja_depths,
         ch_barcodes,
         ch_lineages_meta
     )
     ch_freyja_demix = FREYJA_DEMIX.out.demix
-    ch_versions = ch_versions.mix(FREYJA_DEMIX.out.versions.first())
+    ch_versions = ch_versions.mix(FREYJA_DEMIX.out.versions)
 
     emit:
     variants       = FREYJA_VARIANTS.out.variants  // channel: [ val(meta), path(variants_tsv) ]
-    depths         = FREYJA_VARIANTS.out.depths    // channel: [ val(meta), path(depths_tsv) ]
     demix          = FREYJA_DEMIX.out.demix        // channel: [ val(meta), path(demix_tsv) ]
     barcodes       = ch_barcodes                   // channel: [ val(meta), path(barcodes) ]
     lineages_meta  = ch_lineages_meta              // channel: [ val(meta), path(lineages_meta) ]

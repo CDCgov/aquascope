@@ -21,7 +21,7 @@ workflow TRIMMING   {
     IVAR_TRIM(
         bam
     )
-    ch_versions = ch_versions.mix(IVAR_TRIM.out.versions.first())
+    ch_versions = ch_versions.mix(IVAR_TRIM.out.versions)
 
     BAM_SORT_STATS_SAMTOOLS (
     IVAR_TRIM.out.bam,

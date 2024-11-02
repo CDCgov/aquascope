@@ -23,7 +23,7 @@ workflow ONT_TRIMMING   {
     SAMTOOLS_AMPLICONCLIP(
         bam, val_saverejects, val_savestats
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_AMPLICONCLIP.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_AMPLICONCLIP.out.versions)
 
     BAM_SORT_STATS_SAMTOOLS (
     SAMTOOLS_AMPLICONCLIP.out.bam,
