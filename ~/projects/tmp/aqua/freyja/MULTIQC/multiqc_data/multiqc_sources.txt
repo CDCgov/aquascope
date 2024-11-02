@@ -1,3 +1,0 @@
-Module	Section	Sample Name	Source
-Freyja	all_sections	Sample1	/scicomp/scratch/xuz1/nextflow/work/49/ff96f8827e7eccf0d8e9a233486c3e/4/Sample1.tsv
-Freyja	all_sections	Sample2	/scicomp/scratch/xuz1/nextflow/work/49/ff96f8827e7eccf0d8e9a233486c3e/3/Sample2.tsv

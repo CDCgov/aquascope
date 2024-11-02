@@ -1,6 +1,0 @@
-10.1093/bioinformatics/btw354                      # MultiQC
-10.1093/bioinformatics/btv566                      # qualimap
-10.1093/bioinformatics/bts503                      # qualimap
-10.1093/bioinformatics/btp352                      # Samtools
-10.1093/bioinformatics/bty560                      # fastp
-

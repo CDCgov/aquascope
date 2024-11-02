@@ -1,3 +1,0 @@
-Sample	Freyja_mqc-generalstats-freyja-Top_lineage_freyja	Freyja_mqc-generalstats-freyja-Top_lineage_freyja_percentage
-Sample1	XBB.1.5* [Omicron (XBB.1.5.X)]	0.768337240442307
-Sample2	XBB* (XBB.X)	0.7155166931422526
