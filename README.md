@@ -21,9 +21,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 1. Read QC: [`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/)
 2. Trimming reads: [`Fastp`](https://github.com/OpenGene/fastp)
 3. Aligning short reads: [`Minimap2`](https://github.com/lh3/minimap2)
-4. Ivar trim aligned reads: [`IVAR Trim`](https://andersen-lab.github.io/ivar/html/manualpage.html)
-5. Freyja Variant classification: [`Freyja`](https://github.com/andersen-lab/Freyja)
-6. Present QC for raw reads: [`MultiQC`](http://multiqc.info/)
+4. Freyja Variant classification: [`Freyja`](https://github.com/andersen-lab/Freyja)
+5. Present QC for raw reads: [`MultiQC`](http://multiqc.info/)
 
 ## Quick Start
 
