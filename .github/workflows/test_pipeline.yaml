@@ -1,20 +1,21 @@
+name: run_test_pipelines
+on:
+  workflow_dispatch:
+  push:
+   branches:
+    - main
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:latest # Or use a custom Docker image if required
     steps:
-      - name: Install Docker
+      - uses: actions/checkout@v3
+      - uses: nf-core/setup-nextflow@v1
+      - name: Set up Docker
         run: |
           apt-get update
           apt-get install -y docker.io
           service docker start
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Install Nextflow
-        run: |
-          curl -s https://get.nextflow.io | bash
-          sudo mv nextflow /usr/local/bin/
-      - name: Run Nextflow Docker Workflow
-        run: |
+      - name: Docker Illumina AQUASCOPE
+        run: | 
           nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
