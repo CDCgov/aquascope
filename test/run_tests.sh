@@ -1,4 +1,4 @@
-outDir="~/projects/tmp/aqua/"
+outDir="$HOME/projects/tmp/aqua/"
 if [[ -d $outDir ]]; then rm -rf $outDir; fi
 mkdir -p $outDir
 

@@ -25,14 +25,14 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Run Nextflow Illumina AQUASCOPE with Docker
         run: |
-          nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
+          nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir /testing/complete
       - name: Set up Singularity
         uses: singularityhub/install-singularity@main
       - name: Run Nextflow Illumina QUALITY_ALIGN with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir /testing/illumina
       - name: Run Nextflow Illumina AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir /testing/complete
       - name: Run Nextflow Illumina FREYJA_ONLY with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir ~/projects/tmp/freyja
+        run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir /testing/freyja
       - name: Run Nextflow ONT AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/projects/tmp/ont
+        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir /testing/ont
