@@ -35,6 +35,7 @@ include { methodsDescriptionText            } from '../subworkflows/local/utils_
 include { SAMPLESHEET_CHECK                     } from '../modules/local/samplesheet_check.nf'
 include { INPUT_CHECK                           } from '../subworkflows/local/input_check.nf'
 include { ONT_TRIMMING                          } from '../subworkflows/local/ont_trimming.nf'
+include { TRIMMING   as IVAR_TRIMMING_SORTING   } from '../subworkflows/local/trimming.nf'
 
 //
 // MODULES
@@ -126,12 +127,23 @@ workflow runQualityAlign {
         ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
         ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.ifEmpty(null))
 
+        // MODULE: RUN IVAR_TRIM_SORT - Illumina only
+        ch_ivar_sort_bam = Channel.empty()
+        IVAR_TRIMMING_SORTING(ch_short_align_bam)
+        ch_ivar_sort_bam = IVAR_TRIMMING_SORTING.out.bam
+        ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions.ifEmpty(null))
+
         // MODULE: RUN SAMTOOLS_AMPLICON_CLIP_SORT - ONT reads only
         ch_amplicon_sort_bam = Channel.empty()
         ONT_TRIMMING(ch_long_align_bam, params.save_cliprejects, params.save_clipstats)
         ch_amplicon_sort_bam = ONT_TRIMMING.out.bam
+        ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
         ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.ifEmpty(null))
-        
+
+        // Combine sorted BAM files
+        ch_sorted_bam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
+        ch_sorted_mixedbam = ch_sorted_bam.mix(ch_amplicon_sort_bam)
+
         // MODULE: MULTIQC
         if (!params.skip_multiqc) {    
             // set empty
@@ -173,6 +185,7 @@ workflow runQualityAlign {
     }
 
     emit:
+        sorted_mixedbam         = ch_sorted_mixedbam
         multiqc_files           = ch_multiqc_files
         multiqc_report          = ch_multiqc_report
 }
