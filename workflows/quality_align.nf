@@ -39,7 +39,6 @@ include { ONT_TRIMMING                          } from '../subworkflows/local/on
 //
 // MODULES
 //
-include { SAMTOOLS_FAIDX                        } from '../modules/local/samtools/faidx/main'
 include { FASTQC     as FASTQC_RAW_SHORT        } from '../modules/nf-core/fastqc/main'
 include { NANOPLOT   as NANOPLOT_RAW_LONG       } from '../modules/nf-core/nanoplot/main'
 include { FASTP      as FASTP_SHORT             } from '../modules/nf-core/fastp/main'
@@ -67,7 +66,6 @@ workflow runQualityAlign {
 
     // Initialize channels for other data
     ch_versions = Channel.empty()
-    ch_genome_fai = Channel.empty()
 
     // Validate the Sample File
     SAMPLESHEET_CHECK(ch_input)
@@ -80,11 +78,6 @@ workflow runQualityAlign {
         ch_short_reads = INPUT_CHECK.out.raw_short_reads
         ch_long_reads = INPUT_CHECK.out.raw_long_reads
         ch_raw_bam = INPUT_CHECK.out.raw_bam
-
-        // MODULE: Create Fasta Index file using samtools faidx
-        SAMTOOLS_FAIDX(ch_genome)
-        ch_genome_fai = SAMTOOLS_FAIDX.out.fai
-        ch_versions = ch_versions.mix(SAMTOOLS_FAIDX.out.versions.ifEmpty(null))
 
         // MODULE: FastQC on raw data for initial quality checking for short reads
         FASTQC_RAW_SHORT(ch_short_reads)
@@ -113,20 +106,16 @@ workflow runQualityAlign {
         ch_short_align_bam = Channel.empty()
         MINIMAP2_ALIGN_SHORT(ch_trimmed_reads_short, ch_genome, true, false, false)
         ch_short_align_bam = MINIMAP2_ALIGN_SHORT.out.bam
-        ch_short_align_bai = MINIMAP2_ALIGN_SHORT.out.bai
         ch_versions = ch_versions.mix(MINIMAP2_ALIGN_SHORT.out.versions.ifEmpty(null))
 
         ch_long_align_bam = Channel.empty()
         MINIMAP2_ALIGN_LONG(ch_trimmed_reads_long, ch_genome, true, false, false)
         ch_long_align_bam = MINIMAP2_ALIGN_LONG.out.bam
-        ch_long_align_bai = MINIMAP2_ALIGN_LONG.out.bai
 
         // Reheader and Sort the INPUT BAM from Ion-Torrent
         ch_rehead_sorted_bam = Channel.empty()
-        ch_rehead_sorted_bai = Channel.empty()
         REHEADER_BAM(ch_raw_bam, ch_gff)
         ch_rehead_sorted_bam = REHEADER_BAM.out.reheadered_bam
-        ch_rehead_sorted_bai = REHEADER_BAM.out.reheadered_bai
         ch_versions = ch_versions.mix(REHEADER_BAM.out.versions.ifEmpty(null))
 
         // Combine channels for further processing
@@ -141,7 +130,6 @@ workflow runQualityAlign {
         ch_amplicon_sort_bam = Channel.empty()
         ONT_TRIMMING(ch_long_align_bam, params.save_cliprejects, params.save_clipstats)
         ch_amplicon_sort_bam = ONT_TRIMMING.out.bam
-        ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
         ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.ifEmpty(null))
         
         // MODULE: MULTIQC
