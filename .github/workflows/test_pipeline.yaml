@@ -11,9 +11,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: nf-core/setup-nextflow@v1
-      - uses: singularityhub/install-singularity@main
-      - run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
-      - run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
-      - run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir ~/projects/tmp/freyja
-      - run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/projects/tmp/ont
-      - run: nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
+      - name: Setup Singularity
+        uses: singularityhub/install-singularity@main
+      - name: Singularity Illumina QUALITY_ALIGN
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
+      - name: Singularity Illumina AQUASCOPE
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
+      - name: Singularity Illumina FREYJA_ONLY
+        run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir ~/projects/tmp/freyja
+      - name: Singularity ONT AQUASCOPE
+        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/projects/tmp/ont
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+        with:
+          install: true      
+      - name: Docker Illumina AQUASCOPE
+        run: nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
