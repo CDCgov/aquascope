@@ -34,7 +34,6 @@ include { methodsDescriptionText            } from '../subworkflows/local/utils_
 //
 include { SAMPLESHEET_CHECK                     } from '../modules/local/samplesheet_check.nf'
 include { INPUT_CHECK                           } from '../subworkflows/local/input_check.nf'
-include { TRIMMING   as IVAR_TRIMMING_SORTING   } from '../subworkflows/local/trimming.nf'
 include { ONT_TRIMMING                          } from '../subworkflows/local/ont_trimming.nf'
 
 //
@@ -51,7 +50,6 @@ include { QUALIMAP_BAMQC                        } from '../modules/nf-core/quali
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_SHORT} from '../modules/local/minimap2/align/main'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_LONG } from '../modules/local/minimap2/align/main'
 include { REHEADER_BAM                          } from '../modules/local/reheader_bam.nf'
-include { IVAR_VARIANTS                         } from '../modules/nf-core/ivar/variants/main'
 include { MULTIQC                               } from '../modules/nf-core/multiqc/main'
 
 
@@ -139,38 +137,12 @@ workflow runQualityAlign {
         ch_qualimap_multiqc = QUALIMAP_BAMQC.out.results
         ch_versions = ch_versions.mix(QUALIMAP_BAMQC.out.versions.ifEmpty(null))
 
-        // MODULE: RUN IVAR_TRIM_SORT - Illumina only
-        ch_ivar_sort_bam = Channel.empty()
-        ch_ivar_sort_log = Channel.empty()
-        IVAR_TRIMMING_SORTING(ch_short_align_bam)
-        ch_ivar_sort_bam = IVAR_TRIMMING_SORTING.out.bam
-        ch_ivar_sort_log = IVAR_TRIMMING_SORTING.out.log_out
-        ch_ivar_stats = IVAR_TRIMMING_SORTING.out.stats
-        ch_ivar_bam = IVAR_TRIMMING_SORTING.out.ivar_bam
-        ch_versions = ch_versions.mix(IVAR_TRIMMING_SORTING.out.versions.ifEmpty(null))
-
         // MODULE: RUN SAMTOOLS_AMPLICON_CLIP_SORT - ONT reads only
         ch_amplicon_sort_bam = Channel.empty()
         ONT_TRIMMING(ch_long_align_bam, params.save_cliprejects, params.save_clipstats)
         ch_amplicon_sort_bam = ONT_TRIMMING.out.bam
         ch_amplicon_sort_bai = ONT_TRIMMING.out.bai
         ch_versions = ch_versions.mix(ONT_TRIMMING.out.versions.ifEmpty(null))
-
-        // Combine sorted BAM files
-        ch_sorted_bam = ch_ivar_sort_bam.mix(ch_rehead_sorted_bam)
-        ch_sorted_mixedbam = ch_sorted_bam.mix(ch_amplicon_sort_bam)
-
-        // MODULE: Identify variants with iVar
-        ch_ivar_vcf = Channel.empty()
-        IVAR_VARIANTS(
-            ch_sorted_bam, 
-            ch_genome, // Assuming the reference and this are the same 
-            ch_genome_fai,
-            ch_gff, 
-            params.save_mpileup // default is false, change it to true in nextflow.config file
-        )
-        ch_ivar_vcf = IVAR_VARIANTS.out.tsv
-        ch_versions = ch_versions.mix(IVAR_VARIANTS.out.versions.ifEmpty(null))       
         
         // MODULE: MULTIQC
         if (!params.skip_multiqc) {    
@@ -184,7 +156,6 @@ workflow runQualityAlign {
             ch_multiqc_files = ch_multiqc_files.mix(FASTP_LONG.out.json.collect{ it[1] }.ifEmpty([]))
             ch_multiqc_files = ch_multiqc_files.mix(FASTQC_SHORT_TRIMMED.out.zip.collect{ it[1] }.ifEmpty([]))
             ch_multiqc_files = ch_multiqc_files.mix(ch_qualimap_multiqc.collect{ it[1] }.ifEmpty([]))
-            ch_multiqc_files = ch_multiqc_files.mix(ch_ivar_stats.collect{ it[1] }.ifEmpty([]))
 
             // set configs, defaults
             ch_multiqc_config        = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
@@ -214,7 +185,6 @@ workflow runQualityAlign {
     }
 
     emit:
-        sorted_mixedbam         = ch_sorted_mixedbam
         multiqc_files           = ch_multiqc_files
         multiqc_report          = ch_multiqc_report
 }

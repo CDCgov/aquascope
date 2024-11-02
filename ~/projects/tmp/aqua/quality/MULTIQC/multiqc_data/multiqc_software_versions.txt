@@ -1,0 +1,4 @@
+Sample	Samtools	fastp	FastQC
+FastQC			0.12.1
+Samtools	1.21		
+fastp		0.23.4	

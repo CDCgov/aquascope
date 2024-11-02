@@ -1,0 +1,3 @@
+Sample	total_reads	mapped_reads	mapped_bases	sequenced_bases	duplication_rate	regions_size	regions_mapped_reads	mean_insert_size	median_insert_size	mean_mapping_quality	gc_percentage	general_error_rate	homopolymer_indels	mean_coverage	percentage_aligned	percentage_aligned_on_target
+SAMPLE1_PE	54698	54347	16211010	16204617	36.41	29903	54347	662.178	392.0	59.1097	38.48	0.53	39.79	542.1199	99.35829463600132	100.0
+SAMPLE1_SE	27686	27519	8215827	8212591	28.05	29903	27519	0.0	0.0	59.7089	38.47	0.52	39.74	274.7493	99.39680705049484	100.0
