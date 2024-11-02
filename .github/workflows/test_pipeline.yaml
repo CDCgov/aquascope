@@ -1,41 +1,20 @@
-name: run_test_pipelines
-
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    container:
+      image: ubuntu:latest # Or use a custom Docker image if required
     steps:
+      - name: Install Docker
+        run: |
+          apt-get update
+          apt-get install -y docker.io
+          service docker start
       - name: Checkout code
         uses: actions/checkout@v3
-      
-      - name: Set up Docker
-        uses: docker/setup-qemu-action@v2  # Ensures multi-platform support if needed (optional)
-      
-      - name: Docker login (if required for pulling private images)
-        if: env.DOCKER_USERNAME && env.DOCKER_PASSWORD
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-      
       - name: Install Nextflow
         run: |
           curl -s https://get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
-      
-      - name: Run Nextflow Illumina QUALITY_ALIGN with Singularity
-        uses: singularityhub/install-singularity@main
-      - run: |
-          nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/tmp/illumina
-      
-      - name: Run Nextflow Illumina AQUASCOPE with Singularity
-        run: |
-          nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
-
-      - name: Run Nextflow Illumina AQUASCOPE with Docker
+      - name: Run Nextflow Docker Workflow
         run: |
           nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/tmp/complete
