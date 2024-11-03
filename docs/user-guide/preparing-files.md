@@ -42,15 +42,15 @@ SAMPLE1_SE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/vira
 ## Samplesheet for `FREYJA_ONLY` workflow
 
 ```console
-SNAME,BAMFILE
+sample,bam_file
 Sample1,test/Sample1.bam
 Sample2,test/Sample2.bam
 ```
 
 | Column         | Description                                                                                                                                                                            |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `SNAME`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
-| `BAMFILE`     | Full path to BAM file for Ion-torrent short reads. File has to .bam strictly| 
+| `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). |
+| `bam_file`     | Full path to BAM file for Ion-torrent short reads. File has to .bam strictly| 
 
 
 Option 1. Create a samplesheet using the following reference: 

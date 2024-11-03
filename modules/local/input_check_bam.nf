@@ -10,8 +10,8 @@ workflow INPUT_BAM_CHECK {
             .splitCsv(header: true)
             .map { row ->
                 if (row.size() == 2) {
-                    def id = row.SNAME
-                    def bam_file = row.BAMFILE ? file(row.BAMFILE, checkIfExists: true) : false
+                    def id = row.sample
+                    def bam_file = row.bam_file ? file(row.bam_file, checkIfExists: true) : false
 
                     if (!bam_file) {
                         exit 1, "Invalid input samplesheet: BAM file must be specified."

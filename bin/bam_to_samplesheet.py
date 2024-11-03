@@ -22,7 +22,7 @@ def extract_sample_name(bam_filename):
 def generate_samplesheet(directory, output_file):
     bam_files = [f for f in os.listdir(directory) if f.endswith(".bam")]
     with open(output_file, "w") as fout:
-        fout.write("SNAME,BAMFILE\n")
+        fout.write("sample,bam_file\n")
         for bam_file in bam_files:
             sample_name = extract_sample_name(bam_file)
             bam_path = os.path.abspath(os.path.join(directory, bam_file))
