@@ -1,3 +1,5 @@
+# Contributions
+
 `Aquascope` was largely developed by [OAMD's](https://www.cdc.gov/amd/index.html) SciComp Team, with inputs from [NWSS](https://www.cdc.gov/nwss/wastewater-surveillance.html) and the DCIPHER Team at Palantir:
  
 - [Boddapati, A.](https://github.com/arunbodd)

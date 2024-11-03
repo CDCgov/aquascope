@@ -1,4 +1,4 @@
-# Pipeline overview
+# Getting Started
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) as it's workflow manager.
 

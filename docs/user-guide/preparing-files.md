@@ -1,4 +1,4 @@
-# Prepare the Samplesheets
+# Preparing Files
 
 You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with a header row as shown in the examples below.
 
@@ -63,7 +63,7 @@ Option 2. Create samplesheet for primer trimmed bams using the python script `bi
     --output <OUTPUT_FILE>"
   ```
 
-# Prepare the config files
+## Prepare the config files
 Prepare the configuration files
 
 A. `scicomp.config`: CDC specific config to run on SciComp resources.

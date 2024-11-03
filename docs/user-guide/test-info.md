@@ -1,7 +1,7 @@
-# 6. Pipeline Tutorial
+# Test Information
 Welcome to the Aquascope Pipeline Tutorial!
 
-## 6.1 Getting Started
+## Getting Started
 Review the information on the [Getting Started](https://github.com/CDCgov/aquascope/blob/feature_docs/docs/user-guide/getting-started.md) for a complete overview of the pipeline. The tutorial below will use test data available as part of the pipeline in the assets folder that runs on any HPC environment and was primarily tested using singularity container. All example code will assume you are running v2.0.0 of the pipeline, using test data available on GitHub.
 
 A. Change launch directory to the CDCgov/aquascope folder after your git clone or nextflow pull the pipeline.
@@ -9,7 +9,7 @@ B. *CDC-Users Only* Your NXF_WORK, NXF_CONDA_CACHEDIR, NXF_SINGULARITY_CACHEDIR 
 C. *CDC-Users Only* Please check with your `HPC infrastructure Team` for custom config files. We have a `rosalind` cluster config to run this pipeline and please reach out to [`SciComp`] (https://info.biotech.cdc.gov/info/) for additional help.
 
 
-## 6.2 Decide the test to perform
+## Decide the test to perform
 The pipeline includes three different entry points (View [Getting Started](https://github.com/CDCgov/aquascope/blob/feature_docs/docs/user-guide/getting-started.md) for more information) and three different data inputs (Illumina, ONT, BAM). Determine which test meets your needs.
 
 A. Test Illumina Input 

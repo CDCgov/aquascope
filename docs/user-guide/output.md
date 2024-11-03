@@ -1,6 +1,4 @@
-# aquascope: Output
-
-## Introduction
+# Output
 
 This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
@@ -18,6 +16,10 @@ This folder contains FastQC reports for ILLUMINA data, both pre and post trimmin
     * `*_fastqc.zip`: Zip archive containing the FastQC report, tab-delimited data file and plot images.
 
 </details>
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/CDCgov/aquascope/main/docs/img/mqc_fastqc_quality.png" width="85%" height="85%">
+</div>
 
 ## [NANOPLOT](#nanoplot)
 This folder contains NanoPlot reports for ONT data, both pre and post trimming. `Raw_Reads` and `Trimmed_Reads` are the output directories.
