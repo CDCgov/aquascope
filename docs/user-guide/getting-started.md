@@ -46,3 +46,59 @@ Currently, there are 3 entrypoints for the Aquascope pipeline
     - minimap2=2.24
     - multiqc=1.21
     - freyja=1.5.2
+
+### Core Nextflow arguments
+
+> **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
+
+#### `-profile`
+
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
+
+Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
+They are loaded in sequence, so later profiles can overwrite earlier profiles.
+
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
+
+* `docker`
+    * A generic configuration profile to be used with [Docker](https://docker.com/)
+* `singularity`
+    * A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+* `podman`
+    * A generic configuration profile to be used with [Podman](https://podman.io/)
+* `shifter`
+    * A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+* `charliecloud`
+    * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+* `conda`
+    * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+* `test`
+    * A profile with a complete configuration for automated testing
+    * Includes links to test data so needs no other parameters
+
+#### `-resume`
+
+Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+
+You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
+
+#### `-c`
+
+Specify the path to a specific config file (this is a core Nextflow command). See the [nf-core website documentation](https://nf-co.re/usage/configuration) for more information.
+
+#### Nextflow memory requirements
+
+In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
+We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
+
+```console
+NXF_OPTS='-Xms1g -Xmx4g'
+```
+
+### Reproducibility
+
+It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
+
+First, go to the [CDCgov/aquascope releases page](https://github.com/CDCgov/aquascope/releases/) and find the latest version number - numeric only (eg. `3.0.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 3.0.0`.
+
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.
