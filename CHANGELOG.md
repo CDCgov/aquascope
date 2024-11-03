@@ -6,12 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## dev
 
 ## v3.0.0
-### `Added`
+### `Added/Fixed`
 * Feature docs by @arunbodd in https://github.com/CDCgov/aquascope/pull/56
 * NF-core template update, added three new entry points by @slsevilla in https://github.com/CDCgov/aquascope/pull/60
 * Added CI workflow to test the pipeline by @antongray1 in https://github.com/CDCgov/aquascope/pull/62
 * Updated FREYJA version by @slsevilla in 7d615c8b9bf33272025d0ded0770ed7650db287a
 * Update schema requirrements by @slsevilla in f98393af109e5ff9592dff27b449eaf982f899b1
+* Fix samplesheet col name inconsistency by @slsevilla in 2a511d6b013aa67262363669169d33e3c5abd5d1
 
 ### `Docs`
 * Updated readme to trigger mkdocs workflow by @antongray1 in https://github.com/CDCgov/aquascope/pull/65
