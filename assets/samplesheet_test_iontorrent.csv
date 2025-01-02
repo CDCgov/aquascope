@@ -1,0 +1,2 @@
+sample,platform,fastq_1,fastq_2,lr,bam_file,bedfile
+SAMPLE1,iontorrent,,,,path/to/sile/sample1.bam,path/to/file/.primer.bed
