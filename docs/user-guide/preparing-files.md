@@ -11,12 +11,13 @@ You will need to create a samplesheet with information about the samples you wou
 ## Samplesheet for `QUALITY_ALIGN` or `AQUASCOPE` workflows
 	
 - Create a samplesheet using the following reference: 
-    - [Illumina example](../../assets/samplesheet_test_illumina.csv)
-    - [ONT example](../../assets/samplesheet_test_ont.csv)
+    - [Illumina example](https://github.com/CDCgov/aquascope/blob/main/assets/samplesheet_test_illumina.csv)
+    - [Oxford Nanopore example](https://github.com/CDCgov/aquascope/blob/main/assets/samplesheet_test_ont.csv)
+    - [Ion-torrent example](https://github.com/CDCgov/aquascope/blob/main/assets/samplesheet_test_iontorrent.csv)	
 
 Notes:
-    - Currently, Illumina, Ion-torrent and Oxford Nanopore platforms are supported in this pipeline.
-    - Bedfiles can be a local file path or a raw.github url
+- Currently, Illumina, Ion-torrent and Oxford Nanopore platforms are supported in this pipeline.
+- Bedfiles can be a local file path or a raw.github url
 
 The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. It auto-detects sequencing platform (Illumina, Ion-torrent and Oxford nanopore) and determines which set of tools have to be run. The samplesheet must have 7 columns, and have to be in the same order as the header shown below.
 

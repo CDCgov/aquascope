@@ -18,7 +18,7 @@ This folder contains FastQC reports for ILLUMINA data, both pre and post trimmin
 </details>
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/CDCgov/aquascope/main/docs/img/mqc_fastqc_quality.png" width="85%" height="85%">
+  <img src="https://raw.githubusercontent.com/CDCgov/aquascope/main/docs/images/mqc_fastqc_quality.png" width="85%" height="85%">
 </div>
 
 ## [NANOPLOT](#nanoplot)
