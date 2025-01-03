@@ -64,3 +64,21 @@ main.nf \
 -profile test_bams,<docker,singularity,nf-core institutional config
 -entry AQUASCOPE
 ```
+D. Test Iontorrent Input
+Test [samplesheet](https://github.com/CDCgov/aquascope/blob/dev/assets/samplesheet_test_iontorrent.csv) is included in the .assets/ directory. The `test_illumina` profile will automatically configure this input.
+
+```
+### CDC Internal Users
+nextflow run \
+main.nf \
+-profile test_iontorrent,singularity,scicomp_rosalind
+-entry AQUASCOPE
+
+### All Other Users
+nextflow run \
+main.nf \
+-profile test_iontorrent,<docker,singularity,nf-core institutional config
+-entry AQUASCOPE
+```
+
+
