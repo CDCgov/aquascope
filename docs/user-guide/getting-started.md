@@ -44,7 +44,7 @@ Currently, there are 3 entrypoints for the Aquascope pipeline
     - fastqc=0.12.1
     - qualimap=2.3
     - minimap2=2.24
-    - multiqc=1.21
+    - multiqc=1.25.1
     - freyja=1.5.2
 
 ### Core Nextflow arguments
