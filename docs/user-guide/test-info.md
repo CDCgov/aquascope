@@ -2,7 +2,7 @@
 Welcome to the Aquascope Pipeline Tutorial!
 
 ## Getting Started
-Review the information on the [Getting Started](https://cdcgov.github.io/aquascope/user-guide/getting-started/) for a complete overview of the pipeline. The tutorial below will use test data available as part of the pipeline in the assets folder that runs on any HPC environment and was primarily tested using singularity container. All example code will assume you are running v2.0.0 of the pipeline, using test data available on GitHub.
+Review the information on the [Getting Started](https://cdcgov.github.io/aquascope/user-guide/getting-started/) for a complete overview of the pipeline. The tutorial below will use test data available as part of the pipeline in the assets folder that runs on any HPC environment and was primarily tested using singularity container. All example code will assume you are running v3.0.0 of the pipeline, using test data available on GitHub.
 
 A. Change launch directory to the CDCgov/aquascope folder after your git clone or nextflow pull the pipeline.
 
