@@ -17,7 +17,7 @@ Currently, there are 3 entrypoints for the Aquascope pipeline
 - [NanoPlot](https://github.com/wdecoster/NanoPlot) gives general quality metrics about your sequenced reads. its a Plotting tool for long read sequencing data and alignments.
 - [Fastp](https://github.com/OpenGene/fastp) A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
 - [Qualimap](http://qualimap.conesalab.org/) Qualimap examines sequencing alignment data in SAM/BAM files according to the features of the mapped reads and provides an overall view of the data that helps to the detect biases in the sequencing and/or mapping of the data and eases decision-making for further analysis.
-- [Minimap2](https://github.com/lh3/minimap2) Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against a large reference database. Typical use cases include: (1) mapping PacBio or Oxford Nanopore genomic reads to the human genome; (2) finding overlaps between long reads with error rate up to ~15%; (3) splice-aware alignment of PacBio Iso-Seq or Nanopore cDNA or Direct RNA reads against a reference genome; (4) aligning Illumina single- or paired-end reads; (5) assembly-to-assembly alignment; (6) full-genome alignment between two closely related species with divergence below ~15%.
+- [Minimap2](https://github.com/lh3/minimap2) Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against a large reference database. Typical use cases include: (1) mapping PacBio or Oxford Nanopore genomic reads to the human genome; (2) finding overlaps between long reads with error rate up to ~15%; (3) splice-aware alignment of PacBio Iso-Seq or Oxford Nanopore cDNA or Direct RNA reads against a reference genome; (4) aligning Illumina single- or paired-end reads; (5) assembly-to-assembly alignment; (6) full-genome alignment between two closely related species with divergence below ~15%.
 - [Samtools](http://www.htslib.org/) Samtools is a suite of programs for interacting with high-throughput sequencing data.
 - [ivarTrim](https://andersen-lab.github.io/ivar/html/manualpage.html) iVar uses primer positions supplied in a BED file to soft clip primer sequences from an aligned and sorted BAM file. Following this, the reads are trimmed based on a quality threshold(Default: 20)
 - [AmpliconClip](http://www.htslib.org/doc/samtools-ampliconclip.html) Clips the ends of read alignments if they intersect with regions defined in a BED file. While this tool was originally written for clipping read alignment positions which correspond to amplicon primer locations it can also be used in other contexts. 
@@ -44,7 +44,7 @@ Currently, there are 3 entrypoints for the Aquascope pipeline
     - fastqc=0.12.1
     - qualimap=2.3
     - minimap2=2.24
-    - multiqc=1.21
+    - multiqc=1.25.1
     - freyja=1.5.2
 
 ### Core Nextflow arguments

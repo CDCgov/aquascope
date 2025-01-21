@@ -63,7 +63,7 @@ Three entry points are available within Aquascope
 ```
 
 ### Samplesheet (Required)
-Refer to the `Preparing Files` documentaiton for specific samplesheet-related instructions.
+Refer to the [Preparing Files](https://cdcgov.github.io/aquascope/user-guide/preparing-files/) documentaiton for specific samplesheet-related instructions.
 
 Example:
 
