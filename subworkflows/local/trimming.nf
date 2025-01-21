@@ -2,7 +2,7 @@
 // Subworkflow: Run Trimming
 //
 
-include { IVAR_TRIM                             } from '../../modules/nf-core/modules/nf-core/ivar/trim/main'
+include { IVAR_TRIM                             } from '../../modules/nf-core/ivar/trim/main'
 include { BAM_SORT_STATS_SAMTOOLS               } from './bam_sort_stats_samtools/main'
 
 
@@ -21,7 +21,7 @@ workflow TRIMMING   {
     IVAR_TRIM(
         bam
     )
-    ch_versions = ch_versions.mix(IVAR_TRIM.out.versions.first())
+    ch_versions = ch_versions.mix(IVAR_TRIM.out.versions)
 
     BAM_SORT_STATS_SAMTOOLS (
     IVAR_TRIM.out.bam,

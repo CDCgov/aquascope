@@ -1,75 +1,104 @@
-# Pipeline overview
+# Getting Started
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) as it's workflow manager.
 
-## Processes
+### Entry Points
 
-### [FASTQC](#fastqc)
+Currently, there are 3 entrypoints for the Aquascope pipeline
+
+1. `QUALITY_ALIGN`: for executing quality control, quality reporting, and alignment
+2. `FREYJA_ONLY`: for executing `freyja` sub-workflow, including variant calling and abundance estimations
+    - Requires aligned and trimmed BAM files as input
+4. `AQUASCOPE`: for executing both `QUALITY_ALIGN` and `FREYJA_ONLY` as END-TO-END analysis
+
+### Processes
+
 - [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your sequenced reads. It provides information about the quality score distribution across your reads, per base sequence content (%A/T/G/C), adapter contamination and overrepresented sequences. For further reading and documentation see the [FastQC help pages](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
-- **Input**: Raw and Trimmed short-read data.
-- **Output**: Quality metrics for raw and trimmed short-read data.
-
-### [NANOPLOT](#nanoplot)
 - [NanoPlot](https://github.com/wdecoster/NanoPlot) gives general quality metrics about your sequenced reads. its a Plotting tool for long read sequencing data and alignments.
-- **Input**: Raw and Trimmed long-read data.
-- **Output**: Quality metrics for long-read data.
-
-### [FASTP](#fastp)
 - [Fastp](https://github.com/OpenGene/fastp) A tool designed to provide fast all-in-one preprocessing for FastQ files. This tool is developed in C++ with multithreading supported to afford high performance.
-- **Input**: Trimmed reads from short and long-reads.
-- **Output**: Adapter trimmed reads for both long and short-read data.
-
-### [Qualimap/BAMQC](#qualimap-bamqc)
 - [Qualimap](http://qualimap.conesalab.org/) Qualimap examines sequencing alignment data in SAM/BAM files according to the features of the mapped reads and provides an overall view of the data that helps to the detect biases in the sequencing and/or mapping of the data and eases decision-making for further analysis.
-- **Input**: BAM files from alignment step.
-- **Output**: Quality metrics and coverage statistics reports.
-
-### [ALIGNMENT/MINIMAP2](#alignment-minimap2)
-- [Minimap2](https://github.com/lh3/minimap2) Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against a large reference database. Typical use cases include: (1) mapping PacBio or Oxford Nanopore genomic reads to the human genome; (2) finding overlaps between long reads with error rate up to ~15%; (3) splice-aware alignment of PacBio Iso-Seq or Nanopore cDNA or Direct RNA reads against a reference genome; (4) aligning Illumina single- or paired-end reads; (5) assembly-to-assembly alignment; (6) full-genome alignment between two closely related species with divergence below ~15%.
-- **Input**: Trimmed reads from FASTP step.
-- **Output**: Aligned reads in BAM format.
-
-### [SAMTOOLS](#samtools)
+- [Minimap2](https://github.com/lh3/minimap2) Minimap2 is a versatile sequence alignment program that aligns DNA or mRNA sequences against a large reference database. Typical use cases include: (1) mapping PacBio or Oxford Nanopore genomic reads to the human genome; (2) finding overlaps between long reads with error rate up to ~15%; (3) splice-aware alignment of PacBio Iso-Seq or Oxford Nanopore cDNA or Direct RNA reads against a reference genome; (4) aligning Illumina single- or paired-end reads; (5) assembly-to-assembly alignment; (6) full-genome alignment between two closely related species with divergence below ~15%.
 - [Samtools](http://www.htslib.org/) Samtools is a suite of programs for interacting with high-throughput sequencing data.
-- **Input**: BAM file from the ALIGNMENT step.
-- **Output**: Statistics on each BAM file and a reference index.
-
-### [PRIMERTRIMMING](#AmpliconClip_and_iVar_Trimming)
 - [ivarTrim](https://andersen-lab.github.io/ivar/html/manualpage.html) iVar uses primer positions supplied in a BED file to soft clip primer sequences from an aligned and sorted BAM file. Following this, the reads are trimmed based on a quality threshold(Default: 20)
 - [AmpliconClip](http://www.htslib.org/doc/samtools-ampliconclip.html) Clips the ends of read alignments if they intersect with regions defined in a BED file. While this tool was originally written for clipping read alignment positions which correspond to amplicon primer locations it can also be used in other contexts. 
-- **Input**: Aligned BAM files.
-- **Output**: BAM files with primers trimmed.
-
-### [VariantCalling](#ivar_and_freyja_variant_calling)
 - [ivarVariantCalling](https://andersen-lab.github.io/ivar/html/manualpage.html) iVar uses the output of the samtools mpileup command to call variants - single nucleotide variants(SNVs) and indels.
 - [Freyja](https://github.com/andersen-lab/Freyja) Perform variant calling using samtools and iVar on a BAMFILE and generates relative lineage abundances from VARIANTS and DEPTHS.
-- **Input**: Primer trimmed BAM files.
-- **Output**: Variant calls and demixed sequences.
-
-### [MultiQC](#multiqc)
-
 - [MultiQC](http://multiqc.info) is a visualization tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in the report data directory.
 - Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQC. The pipeline has special steps which also allow the software versions to be reported in the MultiQC output for future traceability. For more information about how to use MultiQC reports, see <http://multiqc.info>.
-- **Input**: FASTQC data files
-- **Output**: MultQC report.
 
-### [Execution Reports](#pipeline-information) 
-- [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
-
-## [Dependencies](#dependencies)
-
+### [Dependencies](#dependencies)
 1. Install [`Nextflow`](https://www.nextflow.io/docs/latest/getstarted.html#installation) (`>=21.04.0`)
 
 2. Install any necessary software, based on deployment strategy, visiting [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles) for configuration related information: 
 
-    - [`Docker`](https://docs.docker.com/engine/installation/)
+- [`Docker`](https://docs.docker.com/engine/installation/)
+- [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/)
+- [`Conda`](https://conda.io/miniconda.html) 
 
-    - [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/)
+3. The following software is also utilized:
+    - python=3.9
+    - samtools=1.21
+    - fastqc=0.12.1
+    - nanoplot=1.41.6
+    - fastp=0.23.4
+    - fastqc=0.12.1
+    - qualimap=2.3
+    - minimap2=2.24
+    - multiqc=1.25.1
+    - freyja=1.5.2
 
-    - [`Podman`](https://podman.io/)
+### Core Nextflow arguments
 
-    - [`Shifter`](https://nersc.gitlab.io/development/shifter/how-to-use/) 
+> **NB:** These options are part of Nextflow and use a _single_ hyphen (pipeline parameters use a double-hyphen).
 
-    - [`Charliecloud`](https://hpc.github.io/charliecloud/) 
+#### `-profile`
 
-    - [`Conda`](https://conda.io/miniconda.html) **as a last resort
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
+
+Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
+They are loaded in sequence, so later profiles can overwrite earlier profiles.
+
+If `-profile` is not specified, the pipeline will run locally and expect all software to be installed and available on the `PATH`. This is _not_ recommended.
+
+* `docker`
+    * A generic configuration profile to be used with [Docker](https://docker.com/)
+* `singularity`
+    * A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
+* `podman`
+    * A generic configuration profile to be used with [Podman](https://podman.io/)
+* `shifter`
+    * A generic configuration profile to be used with [Shifter](https://nersc.gitlab.io/development/shifter/how-to-use/)
+* `charliecloud`
+    * A generic configuration profile to be used with [Charliecloud](https://hpc.github.io/charliecloud/)
+* `conda`
+    * A generic configuration profile to be used with [Conda](https://conda.io/docs/). Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity, Podman, Shifter or Charliecloud.
+* `test`
+    * A profile with a complete configuration for automated testing
+    * Includes links to test data so needs no other parameters
+
+#### `-resume`
+
+Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+
+You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
+
+#### `-c`
+
+Specify the path to a specific config file (this is a core Nextflow command). See the [nf-core website documentation](https://nf-co.re/usage/configuration) for more information.
+
+#### Nextflow memory requirements
+
+In some cases, the Nextflow Java virtual machines can start to request a large amount of memory.
+We recommend adding the following line to your environment to limit this (typically in `~/.bashrc` or `~./bash_profile`):
+
+```console
+NXF_OPTS='-Xms1g -Xmx4g'
+```
+
+### Reproducibility
+
+It is a good idea to specify a pipeline version when running the pipeline on your data. This ensures that a specific version of the pipeline code and software are used when you run your pipeline. If you keep using the same tag, you'll be running the same version of the pipeline, even if there have been changes to the code since.
+
+First, go to the [CDCgov/aquascope releases page](https://github.com/CDCgov/aquascope/releases/) and find the latest version number - numeric only (eg. `3.0.0`). Then specify this when running the pipeline with `-r` (one hyphen) - eg. `-r 3.0.0`.
+
+This version number will be logged in reports when you run the pipeline, so that you'll know what you used when you look back in the future.

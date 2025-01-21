@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/nf-core/aquascope/master/nextflow_schema.json",
+    "$id": "https://raw.githubusercontent.com/CDCGov-Aquascope/master/nextflow_schema.json",
     "title": "nf-core/aquascope pipeline parameters",
-    "description": "Pipeline is for early detection of SC2 variants of concern via shotgun metagenomic sequencing of wastewater",
+    "description": "wastewater sequencing analysis pipeline for sars-cov-2 amplicons",
     "type": "object",
     "definitions": {
         "input_output_options": {
@@ -12,37 +12,26 @@
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
                 "input",
-                "fasta",
-                "gff"
+                "outdir"
             ],
             "properties": {
                 "input": {
                     "type": "string",
                     "format": "file-path",
+                    "exists": true,
+                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
-                    "schema": "assets/schema_input.json",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/aquascope/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
                 "outdir": {
                     "type": "string",
-                    "description": "Path to the output directory where the results will be saved.",
-                    "default": "./results",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "kraken2db": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Path or URL to Kraken2 database to use for read classification.",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "bedfile": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "Path to primers BED file.",
-                    "fa_icon": "fas fa-folder-open"
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open",
+                    "default": "./results"
                 },
                 "email": {
                     "type": "string",
@@ -54,7 +43,8 @@
                 "multiqc_title": {
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
-                    "fa_icon": "fas fa-file-signature"
+                    "fa_icon": "fas fa-file-signature",
+                    "default": "AquaScope-SARS-CoV-2 Quality Report"
                 }
             }
         },
@@ -67,152 +57,13 @@
                 "fasta": {
                     "type": "string",
                     "format": "file-path",
+                    "exists": true,
                     "mimetype": "text/plain",
                     "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
                     "description": "Path to FASTA genome file.",
                     "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "fai": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "description": "Path to FAI index of the provided reference genome.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "gff": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/plain",
-                    "description": "Path to GFF annotations file corresponding to the provided reference genome.",
-                    "fa_icon": "far fa-file-code"
-                }
-            }
-        },
-        "freyja_barcode_and_metadata": {
-            "title": "Freyja Barcodes and Metadata Options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Input lineage files and metadata for Freyja lineage calling.",
-            "properties": {
-                "db_name": {
-                    "type": "string",
-                    "format": "file-path",
-                    "default": "Sarscov2",
-                    "description": "Name of Freyja database.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "freyja_repeats": {
-                    "type": "integer",
-                    "description": "Freyja repeat counts",
-                    "default": 1000,
-                    "fa_icon": "far fa-file-code"
-                },
-                "freyja_barcodes": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to Freyja barcode input file (e.g. usher_barcodes.csv).",
-                    "fa_icon": "far fa-file-code"
-                },
-                "freyja_lineages_meta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "mimetype": "text/json",
-                    "pattern": "^\\S+\\.json$",
-                    "description": "Path to Freyja lineages metadata input file in JSON format (UTF-8 encoding).",
-                    "fa_icon": "far fa-file-code"
-                }
-            }
-        },
-        "illumina_variant_calling_options": {
-            "title": "Freyja Barcodes and Metadata Options",
-            "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Input lineage files and metadata for Freyja lineage calling.",
-            "properties": {
-                "variant_caller": {
-                    "type": "string",
-                    "description": "Variant calling software to use",
-                    "fa_icon": "far fa-file-code"
-                },
-                "consensus_caller": {
-                    "type": "string",
-                    "default": "bcftools",
-                    "description": "Consensus calling software to use",
-                    "fa_icon": "far fa-file-code"
-                },
-                "min_mapped_reads": {
-                    "type": "integer",
-                    "description": "Minimum total mapped reads required to proceed with variant calling",
-                    "default": 1000,
-                    "fa_icon": "far fa-file-code"
-                },
-                "ivar_trim_offset": {
-                    "type": "integer",
-                    "description": "Offset this many bases when running iVar trimming",
-                    "fa_icon": "far fa-file-code"
-                },
-                "ivar_trim_noprimer": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Run iVar trimming without primer BED file?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "filter_duplicates": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Deduplicate read mapping data?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "save_unaligned": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Save unaligned reads?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "save_mpileup": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Save mpileup file from read mapping?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "skip_ivar_trim": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip iVar trimming?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "skip_markduplicates": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Skip markDuplicates step?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "skip_picard_metrics": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip Picard metrics gathering step?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "skip_consensus_plots": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip generating consensus plots?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "skip_consensus": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip consensus base calling?",
-                    "fa_icon": "fas fa-question-circle"
-                },
-                "skip_variants": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Skip variant calling steps?",
-                    "fa_icon": "fas fa-question-circle"
+                    "fa_icon": "far fa-file-code",
+                    "default": "/scicomp/home-pure/xuz1/projects/aqua/aquascope/assets/references/SARS-CoV-2.reference.fasta"
                 }
             }
         },
@@ -236,12 +87,6 @@
                     "default": "https://raw.githubusercontent.com/nf-core/configs/master",
                     "hidden": true,
                     "help_text": "If you're running offline, Nextflow will not be able to fetch the institutional config files from the internet. If you don't need them, then this is not a problem. If you do need them, you should download the files from the repo and tell Nextflow where to find them with this parameter.",
-                    "fa_icon": "fas fa-users-cog"
-                },
-                "hostnames": {
-                    "type": "string",
-                    "description": "Institutional configs hostname.",
-                    "hidden": true,
                     "fa_icon": "fas fa-users-cog"
                 },
                 "config_profile_name": {
@@ -299,7 +144,7 @@
                     "description": "Maximum amount of time that can be requested for any single job.",
                     "default": "240.h",
                     "fa_icon": "far fa-clock",
-                    "pattern": "^(\\d+\\.?\\s*(s|m|h|day)\\s*)+$",
+                    "pattern": "^(\\d+\\.?\\s*(s|m|h|d|day)\\s*)+$",
                     "hidden": true,
                     "help_text": "Use to set an upper-limit for the time requirement for each process. Should be a string in the format integer-unit e.g. `--max_time '2.h'`"
                 }
@@ -315,6 +160,12 @@
                 "help": {
                     "type": "boolean",
                     "description": "Display help text.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
                     "fa_icon": "fas fa-question-circle",
                     "hidden": true
                 },
@@ -362,10 +213,24 @@
                     "fa_icon": "fas fa-palette",
                     "hidden": true
                 },
+                "hook_url": {
+                    "type": "string",
+                    "description": "Incoming hook URL for messaging service",
+                    "fa_icon": "fas fa-people-group",
+                    "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
+                    "hidden": true
+                },
                 "multiqc_config": {
                     "type": "string",
+                    "format": "file-path",
                     "description": "Custom config file to supply to MultiQC.",
                     "fa_icon": "fas fa-cog",
+                    "hidden": true
+                },
+                "multiqc_logo": {
+                    "type": "string",
+                    "description": "Custom logo file to supply to MultiQC. File name must also be set in the MultiQC config file",
+                    "fa_icon": "fas fa-image",
                     "hidden": true
                 },
                 "multiqc_methods_description": {
@@ -373,39 +238,33 @@
                     "description": "Custom MultiQC yaml file containing HTML including a methods description.",
                     "fa_icon": "fas fa-cog"
                 },
-                "tracedir": {
-                    "type": "string",
-                    "description": "Directory to keep pipeline Nextflow logs and reports.",
-                    "default": "${params.outdir}/pipeline_info",
-                    "fa_icon": "fas fa-cogs",
-                    "hidden": true
-                },
                 "validate_params": {
                     "type": "boolean",
                     "description": "Boolean whether to validate parameters against the schema at runtime",
-                    "default": true,
                     "fa_icon": "fas fa-check-square",
                     "hidden": true
                 },
-                "show_hidden_params": {
+                "validationShowHiddenParams": {
                     "type": "boolean",
                     "fa_icon": "far fa-eye-slash",
                     "description": "Show all params when using `--help`",
                     "hidden": true,
                     "help_text": "By default, parameters set as _hidden_ in the schema are not shown on the command line when a user runs with `--help`. Specifying this option will tell the pipeline to show all parameters."
                 },
-                "enable_conda": {
+                "validationFailUnrecognisedParams": {
                     "type": "boolean",
-                    "description": "Run this workflow with Conda. You can also use '-profile conda' instead of providing this parameter.",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters fails when an unrecognised parameter is found.",
                     "hidden": true,
-                    "fa_icon": "fas fa-bacon"
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
                 },
-                "singularity_pull_docker_container": {
+                "validationLenientMode": {
                     "type": "boolean",
-                    "description": "Instead of directly downloading Singularity images for use with Singularity, force the workflow to pull and convert Docker containers instead.",
+                    "fa_icon": "far fa-check-circle",
+                    "description": "Validation of parameters in lenient more.",
                     "hidden": true,
-                    "fa_icon": "fas fa-toolbox",
-                    "help_text": "This may be useful for example if you are unable to directly pull Singularity containers to run the pipeline due to http/https proxy issues."
+                    "help_text": "Allows string values that are parseable as numbers or booleans. For further information see [JSONSchema docs](https://github.com/everit-org/json-schema#lenient-mode).",
+                    "default": true
                 }
             }
         }
@@ -418,12 +277,6 @@
             "$ref": "#/definitions/reference_genome_options"
         },
         {
-            "$ref": "#/definitions/freyja_barcodes_and_metadata"
-        },
-        {
-            "$ref": "#/definitions/illumina_variant_calling_options"
-        },
-        {
             "$ref": "#/definitions/institutional_config_options"
         },
         {
@@ -432,5 +285,56 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "gff": {
+            "type": "string",
+            "default": "/scicomp/home-pure/xuz1/projects/aqua/aquascope/assets/references/SARS-CoV-2.reference.gff"
+        },
+        "gff3": {
+            "type": "string",
+            "default": "/scicomp/home-pure/xuz1/projects/aqua/aquascope/assets/references/SARS-CoV-2.reference.gff3"
+        },
+        "freyja_db_name": {
+            "type": "string",
+            "default": "freyja_db"
+        },
+        "bed": {
+            "type": "string",
+            "default": "freyja_db"
+        },
+        "freyja_barcodes": {
+            "type": "string"
+        },
+        "freyja_lineages_meta": {
+            "type": "string"
+        },
+        "varthresh": {
+            "type": "number",
+            "default": 0.01
+        },
+        "save_cliprejects": {
+            "type": "boolean"
+        },
+        "save_clipstats": {
+            "type": "boolean"
+        },
+        "save_mpileup": {
+            "type": "boolean",
+            "default": true
+        },
+        "enable_conda": {
+            "type": "boolean"
+        },
+        "singularity_pull_docker_container": {
+            "type": "boolean"
+        },
+        "hostnames": {
+            "type": "string",
+            "default": "[]"
+        },
+        "skip_multiqc": {
+            "type": "boolean"
+        }
+    }
 }

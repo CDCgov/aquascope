@@ -2,7 +2,7 @@
 // Subworkflow: Run Trimming on ONT reads
 //
 
-include { SAMTOOLS_AMPLICONCLIP                 } from '../../modules/nf-core/modules/nf-core/samtools/ampliconclip/main'
+include { SAMTOOLS_AMPLICONCLIP                 } from '../../modules/local/samtools/ampliconclip/main'
 include { BAM_SORT_STATS_SAMTOOLS               } from './bam_sort_stats_samtools/main'
 
 
@@ -23,7 +23,7 @@ workflow ONT_TRIMMING   {
     SAMTOOLS_AMPLICONCLIP(
         bam, val_saverejects, val_savestats
     )
-    ch_versions = ch_versions.mix(SAMTOOLS_AMPLICONCLIP.out.versions.first())
+    ch_versions = ch_versions.mix(SAMTOOLS_AMPLICONCLIP.out.versions)
 
     BAM_SORT_STATS_SAMTOOLS (
     SAMTOOLS_AMPLICONCLIP.out.bam,
