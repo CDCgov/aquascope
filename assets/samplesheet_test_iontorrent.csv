@@ -1,2 +1,2 @@
 sample,platform,fastq_1,fastq_2,lr,bam_file,bedfile
-SAMPLE1,iontorrent,,,,test/sample1.bam,https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V3/nCoV-2019.primer.bed
+SAMPLE1,iontorrent,,,,test/Sample1.bam,https://raw.githubusercontent.com/artic-network/primer-schemes/master/nCoV-2019/V3/nCoV-2019.primer.bed
