@@ -25,16 +25,16 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Run Nextflow Illumina AQUASCOPE with Docker
         run: |
-          nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/testing/complete
+          nextflow run main.nf --resume -profile docker,test_illumina -entry AQUASCOPE --outdir ~/projects/complete
       - name: Set up Singularity
         uses: singularityhub/install-singularity@main
       - name: Run Nextflow Illumina QUALITY_ALIGN with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/testing/illumina/quality
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/illumina/quality
       - name: Run Nextflow Illumina AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/testing/illumina/complete
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/illumina/complete
       - name: Run Nextflow Illumina AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_bam -entry AQUASCOPE --outdir ~/testing/bam/complete
+        run: nextflow run main.nf --resume -profile singularity,test_bam -entry AQUASCOPE --outdir ~/projects/bam/complete
       - name: Run Nextflow Ion Torrent FREYJA_ONLY with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_iontorrent -entry AQUASCOPE --outdir ~/testing/iontorrent/complete
+        run: nextflow run main.nf --resume -profile singularity,test_iontorrent -entry AQUASCOPE --outdir ~/projects/iontorrent/complete
       - name: Run Nextflow ONT AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/testing/ont/complete
+        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/projects/ont/complete
