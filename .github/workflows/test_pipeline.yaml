@@ -29,10 +29,12 @@ jobs:
       - name: Set up Singularity
         uses: singularityhub/install-singularity@main
       - name: Run Nextflow Illumina QUALITY_ALIGN with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/testing/illumina
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/testing/illumina/quality
       - name: Run Nextflow Illumina AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/testing/complete
-      - name: Run Nextflow Illumina FREYJA_ONLY with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir ~/testing/freyja
+        run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/testing/illumina/complete
+      - name: Run Nextflow Illumina AQUASCOPE with Singularity
+        run: nextflow run main.nf --resume -profile singularity,test_bam -entry AQUASCOPE --outdir ~/testing/bam/complete
+      - name: Run Nextflow Ion Torrent FREYJA_ONLY with Singularity
+        run: nextflow run main.nf --resume -profile singularity,test_iontorrent -entry AQUASCOPE --outdir ~/testing/iontorrent/complete
       - name: Run Nextflow ONT AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/testing/ont
+        run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/testing/ont/complete
