@@ -16,7 +16,9 @@ You will need to create a samplesheet with information about the samples you wou
     - [Ion-torrent example](https://github.com/CDCgov/aquascope/blob/main/assets/samplesheet_test_iontorrent.csv)	
 
 Notes:
+
 - Currently, Illumina, Ion-torrent and Oxford Nanopore platforms are supported in this pipeline.
+
 - Bedfiles can be a local file path or a raw.github url
 
 The pipeline will auto-detect whether a sample is single- or paired-end using the information provided in the samplesheet. It auto-detects sequencing platform (Illumina, Ion-torrent and Oxford nanopore) and determines which set of tools have to be run. The samplesheet must have 7 columns, and have to be in the same order as the header shown below.
@@ -32,7 +34,7 @@ SAMPLE1_SE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/vira
 | Column         | Description                                                                                                                                                                            | illumina | nanopore | iontorrent |
 |----------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|--------------|---------------------|
 | `sample`       | Custom sample name. This entry will be identical for multiple sequencing libraries/runs from the same sample. Spaces in sample names are automatically converted to underscores (`_`). | Required | Required | Required |
-| `platform`     | Sequencing platform. This entry will determine the type of sequencing used. It is an important entry as the decision to run a set of tools is determined by this entry.                | Required | Required | Required |
+| `platform`     | Sequencing platform. This entry will determine the type of sequencing used. It is an important entry as the decision to run a set of tools is determined by this entry. (Accepted entrys: "illumina", "nanopore", "iontorrent")                | Required | Required | Required |
 | `fastq_1`      | Full path to FastQ file for Illumina short reads 1. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             | Required | NA | NA |
 | `fastq_2`      | Full path to FastQ file for Illumina short reads 2. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz".                                                             | Required | NA | NA |
 | `lr`           | Full path to FastQ file for ONT long reads. File has to be gzipped and have the extension ".fastq.gz" or ".fq.gz". fast5 files are not expected or accepted                            | NA | Required | NA |
@@ -41,6 +43,17 @@ SAMPLE1_SE,illumina,https://raw.githubusercontent.com/nf-core/test-datasets/vira
 
 
 ## Samplesheet for `FREYJA_ONLY` workflow
+
+Option 1. Create a samplesheet using the following reference: 
+
+    - [BAM example](../../assets/samplesheet_test_bam.csv)
+
+Option 2. Create samplesheet for primer trimmed bams using the python script `bin/bam_to_samplesheet.py`
+  ```
+  python bin/bam_to_samplesheet.py \
+    --directory <PATH_TO_BAM_FILES> \
+    --output <OUTPUT_FILE>"
+  ```
 
 ```console
 sample,bam_file
@@ -54,18 +67,7 @@ Sample2,test/Sample2.bam
 | `bam_file`     | Full path to BAM file for Ion-torrent short reads. File has to .bam strictly| 
 
 
-Option 1. Create a samplesheet using the following reference: 
-    - [BAM example](../../assets/samplesheet_test_bam.csv)
-
-Option 2. Create samplesheet for primer trimmed bams using the python script `bin/bam_to_samplesheet.py`
-  ```
-  python bin/bam_to_samplesheet.py \
-    --directory <PATH_TO_BAM_FILES> \
-    --output <OUTPUT_FILE>"
-  ```
-
 ## Prepare the config files
-Prepare the configuration files
 
 A. `scicomp.config`: CDC specific config to run on SciComp resources.
 

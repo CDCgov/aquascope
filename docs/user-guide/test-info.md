@@ -21,13 +21,13 @@ Test [samplesheet](https://github.com/CDCgov/aquascope/blob/dev/assets/sampleshe
 ### CDC Internal Users
 nextflow run \
 main.nf \
--profile test_illumina,singularity,scicomp_rosalind
+-profile test_illumina,singularity,scicomp_rosalind \
 -entry AQUASCOPE
 
 ### All Other Users
 nextflow run \
 main.nf \
--profile test_illumina,<docker,singularity,nf-core institutional config
+-profile test_illumina,<docker,singularity,nf-core institutional config> \
 -entry AQUASCOPE
 ```
 
@@ -38,13 +38,13 @@ Test [samplesheet](https://github.com/CDCgov/aquascope/blob/dev/assets/sampleshe
 ### CDC Internal Users
 nextflow run \
 main.nf \
--profile test_ont,singularity,scicomp_rosalind
+-profile test_ont,singularity,scicomp_rosalind \
 -entry AQUASCOPE
 
 ### All Other Users
 nextflow run \
 main.nf \
--profile test_ont,<docker,singularity,nf-core institutional config
+-profile test_ont,<docker,singularity,nf-core institutional config> \
 -entry AQUASCOPE
 ```
 
@@ -55,13 +55,13 @@ Test [samplesheet](https://github.com/CDCgov/aquascope/blob/main/assets/samplesh
 ### CDC Internal Users
 nextflow run \
 main.nf \
--profile test_bams,singularity,scicomp_rosalind
+-profile test_bams,singularity,scicomp_rosalind \
 -entry AQUASCOPE
 
 ### All Other Users
 nextflow run \
 main.nf \
--profile test_bams,<docker,singularity,nf-core institutional config
+-profile test_bams,<docker,singularity,nf-core institutional config> \
 -entry AQUASCOPE
 ```
 D. Test Iontorrent Input
@@ -71,13 +71,13 @@ Test [samplesheet](https://github.com/CDCgov/aquascope/blob/dev/assets/sampleshe
 ### CDC Internal Users
 nextflow run \
 main.nf \
--profile test_iontorrent,singularity,scicomp_rosalind
+-profile test_iontorrent,singularity,scicomp_rosalind \
 -entry AQUASCOPE
 
 ### All Other Users
 nextflow run \
 main.nf \
--profile test_iontorrent,<docker,singularity,nf-core institutional config
+-profile test_iontorrent,<docker,singularity,nf-core institutional config> \
 -entry AQUASCOPE
 ```
 
