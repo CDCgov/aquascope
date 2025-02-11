@@ -7,6 +7,9 @@ data/
 ont_fastq/
 results/
 testing/
+freyjaupdateout/
+illuminaout_complete/
+ontout_complete/
 
 # background
 .DS_Store
