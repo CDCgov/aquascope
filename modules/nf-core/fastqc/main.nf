@@ -38,7 +38,6 @@ process FASTQC {
     fastqc \\
         $args \\
         --threads $task.cpus \\
-        --memory $fastqc_memory \\
         $renamed_files
 
     cat <<-END_VERSIONS > versions.yml
