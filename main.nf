@@ -16,7 +16,6 @@ nextflow.enable.dsl = 2
 // Initialises the workflow and validates parameters
 include  { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
 include  { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
-include  { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_aquascope_pipeline'
 /*
 ========================================================================================
     NAMED WORKFLOW FOR PIPELINE
@@ -49,11 +48,11 @@ workflow QUALITY_ALIGN {
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir
+        params.outdir,
+        params.input
     )
 
     runQualityAlign()
@@ -68,7 +67,6 @@ workflow QUALITY_ALIGN {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        runQualityAlign.out.multiqc_report
     )
 }
 
@@ -83,11 +81,11 @@ workflow FREYJA_ONLY {
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir
+        params.outdir,
+        params.input
     )
     // 
     // Run the BAM check on inputs
@@ -113,7 +111,6 @@ workflow FREYJA_ONLY {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        runFreyja.out.multiqc_report
     )
 }
 
@@ -129,11 +126,11 @@ workflow AQUASCOPE {
     //
     PIPELINE_INITIALISATION (
         params.version,
-        params.help,
         params.validate_params,
         params.monochrome_logs,
         args,
-        params.outdir
+        params.outdir,
+        params.input
     )
 
     // RUN THE QA
@@ -155,7 +152,6 @@ workflow AQUASCOPE {
         params.outdir,
         params.monochrome_logs,
         params.hook_url,
-        runFreyja.out.multiqc_report
     )
 }
 
