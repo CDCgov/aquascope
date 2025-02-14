@@ -19,9 +19,8 @@ if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input sample
 */
 include { softwareVersionsToYAML            } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { paramsSummaryMultiqc              } from '../subworkflows/nf-core/utils_nfcore_pipeline'
-include { paramsSummaryMap                  } from 'plugin/nf-validation'
+include { paramsSummaryMap                  } from 'plugin/nf-schema'
 include { methodsDescriptionText            } from '../subworkflows/local/utils_nfcore_aquascope_pipeline'
-
 
 /*
 ========================================================================================
