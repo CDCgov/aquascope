@@ -17,7 +17,7 @@
                         "size": "Large",
                         "weight": "Bolder",
                         "color": "<% if (success) { %>Good<% } else { %>Attention<%} %>",
-                        "text": "nf-core/aquascope v${version} - ${runName}",
+                        "text": "CDCgov/aquascope v${version} - ${runName}",
                         "wrap": true
                     },
                     {

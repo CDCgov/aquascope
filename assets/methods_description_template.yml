@@ -1,13 +1,11 @@
-id: "NWSS-aquascope-methods-description"
+id: "Aquascope-methods-description"
 description: "Suggested text and references to use when describing pipeline usage within the methods section of a publication."
-section_name: "NWSS/aquascope Methods Description"
-section_href: "https://github.com/NWSS/aquascope"
+section_name: "Aquascope Methods Description"
+section_href: "https://github.com/CDCgov/aquascope"
 plot_type: "html"
-## TODO nf-core: Update the HTML below to your prefered methods description, e.g. add publication citation for this pipeline
-## You inject any metadata in the Nextflow '${workflow}' object
 data: |
   <h4>Methods</h4>
-  <p>Data was processed using NWSS/aquascope v${workflow.manifest.version} ${doi_text} of the nf-core collection of workflows (<a href="https://doi.org/10.1038/s41587-020-0439-x">Ewels <em>et al.</em>, 2020</a>).</p>
+  <p>Data was processed using CDCgov/aquascope v${workflow.manifest.version} ${doi_text} of the nf-core collection of workflows (<a href="https://doi.org/10.1038/s41587-020-0439-x">Ewels <em>et al.</em>, 2020</a>).</p>
   <p>The pipeline was executed with Nextflow v${workflow.nextflow.version} (<a href="https://doi.org/10.1038/nbt.3820">Di Tommaso <em>et al.</em>, 2017</a>) with the following command:</p>
   <pre><code>${workflow.commandLine}</code></pre>
   <h4>References</h4>

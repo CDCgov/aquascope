@@ -1,13 +1,14 @@
-outDir="$HOME/projects/tmp/aqua/"
+outDir="$HOME/projects/tmp/aqua_tests/"
 if [[ -d $outDir ]]; then rm -rf $outDir; fi
 mkdir -p $outDir
 
 module purge
-module load nextflow/24.04.2
-module load singularity
+module --ignore-cache load nextflow/24.10.4
+
 source /etc/profile
 
-nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir $outDir/quality
-nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir $outDir/aqua
-nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir $outDir/freyja
-nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir $outDir/ont
+nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir $outDir/ILLUMINA/complete
+nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir $outDir/ILLUMINA/quality
+nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir $outDir/BAM/COMPLETE
+nextflow run main.nf --resume -profile singularity,test_iontorrent -entry AQUASCOPE --outdir $outDir/iontorrent
+nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir $outDir/ONT/COMPLETE

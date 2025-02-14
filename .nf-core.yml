@@ -1,2 +1,125 @@
 repository_type: pipeline
-nf_core_version: "2.14.1"
+
+nf_core_version: 3.2.0
+
+lint:
+  files_unchanged:
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - .github/CONTRIBUTING.md
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - LICENSE
+    - .prettierignore
+    - .prettierignore
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/workflows/branch.yml
+    - .github/workflows/linting_comment.yml
+    - .github/workflows/linting.yml
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - .github/CONTRIBUTING.md
+    - .github/CONTRIBUTING.md
+    - assets/sendmail_template.txt
+    - LICENSE
+    - .prettierignore
+    - .prettierignore
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-aquascope_logo_light.png
+    - docs/images/nf-core-aquascope_logo_light.png
+    - docs/images/nf-core-aquascope_logo_dark.png
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/CONTRIBUTING.md
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - assets/email_template.txt
+    - docs/README.md
+  nextflow_config: false
+  multiqc_config: false
+  files_exist:
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - assets/multiqc_config.yml
+    - LICENSE
+    - assets/email_template.html
+    - assets/sendmail_template.txt
+    - assets/email_template.txt
+    - docs/output.md
+    - docs/README.md
+    - docs/usage.md
+    - conf/test.config
+    - conf/test_full.config
+    - .github/workflows/ci.yml
+    - .github/ISSUE_TEMPLATE/bug_report.yml
+    - .github/ISSUE_TEMPLATE/feature_request.yml
+    - .github/PULL_REQUEST_TEMPLATE.md
+    - .github/CONTRIBUTING.md
+    - .github/.dockstore.yml
+    - conf/igenomes.config
+    - conf/igenomes_ignored.config
+    - assets/multiqc_config.yml
+    - LICENSE
+    - assets/email_template.html
+    - assets/sendmail_template.txt
+    - assets/email_template.txt
+    - docs/output.md
+    - docs/README.md
+    - docs/usage.md
+    - conf/test.config
+    - conf/test_full.config
+    - .github/workflows/ci.yml
+    - CODE_OF_CONDUCT.md
+    - assets/nf-core-aquascope_logo_light.png
+    - docs/images/nf-core-aquascope_logo_light.png
+    - docs/images/nf-core-aquascope_logo_dark.png
+    - .github/ISSUE_TEMPLATE/config.yml
+    - .github/workflows/awstest.yml
+    - .github/workflows/awsfulltest.yml
+  readme:
+    - nextflow_badge
+    - nextflow_badge
+    - nextflow_badge
+
+template:
+  org: CDCgov
+  name: Aquascope
+  description: This project is a successor to the C-WAP pipeline and is intended to
+    process SARS-CoV-2 wastewater samples to determine relative variant abundance.
+  author: S. Sevilla
+  version: 4.0.0
+  force: true
+  outdir: .
+  skip_features:
+    - github
+    - igenomes
+    - github_badges
+    - gitpod
+    - codespaces
+    - multiqc
+    - fastqc
+    - license
+    - email
+    - slackreport
+    - documentation
+    - test_config
+    - seqera_platform
+    - vscode
+  is_nfcore: false
