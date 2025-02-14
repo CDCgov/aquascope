@@ -32,9 +32,9 @@ jobs:
         run: nextflow run main.nf --resume -profile singularity,test_illumina -entry QUALITY_ALIGN --outdir ~/projects/illumina/quality
       - name: Run Nextflow Illumina AQUASCOPE with Singularity
         run: nextflow run main.nf --resume -profile singularity,test_illumina -entry AQUASCOPE --outdir ~/projects/illumina/complete
-      - name: Run Nextflow Illumina AQUASCOPE with Singularity
-        run: nextflow run main.nf --resume -profile singularity,test_bam -entry AQUASCOPE --outdir ~/projects/bam/complete
-      - name: Run Nextflow Ion Torrent FREYJA_ONLY with Singularity
+      - name: Run Nextflow Illumina FREYJA with Singularity
+        run: nextflow run main.nf --resume -profile singularity,test_bam -entry FREYJA_ONLY --outdir ~/projects/bam/complete
+      - name: Run Nextflow Ion Torrent AQUASCOPE with Singularity
         run: nextflow run main.nf --resume -profile singularity,test_iontorrent -entry AQUASCOPE --outdir ~/projects/iontorrent/complete
       - name: Run Nextflow ONT AQUASCOPE with Singularity
         run: nextflow run main.nf --resume -profile singularity,test_ont -entry AQUASCOPE --outdir ~/projects/ont/complete
