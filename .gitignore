@@ -7,20 +7,6 @@ data/
 ont_fastq/
 results/
 testing/
-freyjaupdateout/
-illuminaout_complete/
-ontout_complete/
-freyjaupdateout2/
-freyjaupdateout5/
-freyjaupdateoutscicomp/
-illuminaout_complete5/
-illuminaout_scicomp/
-illuminaout_scicomp2/
-illuminaout_scicomp4/
-ontout_5/
-ontout_scicomp/
-
-
 
 # background
 .DS_Store
